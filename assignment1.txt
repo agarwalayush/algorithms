@@ -1,0 +1,13 @@
+3) Proof by induction:
+ Assume that we can have a square(of side k) with the required constraints and an empty corner square(of unit side), then we can have a square of side 2k satisfying the constraints and an empty corner square.
+
+ Base case: A square of length 2. Keep the commando on the bottom left corner, thus the empty square is top right square.
+
+ Hypothesis: It is possible to construct a square of side k with an empty top right corner and satisfying the required constraints.
+
+ Inductive Step: Consider a square of side 2k. Divide it into 4 equal squares of side k. Following the hypothesis, each square of side k has one corner blank. Appropriately rotate 3 sqaures, and join them to make 'L' shape out 
+            of the blank squares join. Place a commando at the point common to all the 3 squares so that he can cover the empty 'L' shape newly formed. Now place the remaining square of side k with the join of other 3 square in 
+            such a way that the empty corner of this square(k side) is at the corner of the 2k-square. 
+            Thus, we have a square of side 2k with one empty unit-square, which satisfies all the constraints.
+
+            Number of commandos: (n^(log3) - 1)/2
