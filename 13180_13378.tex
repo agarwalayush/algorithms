@@ -21,17 +21,27 @@ in A with it's x coordinate. Repeat the above procedure for all points.
 \subsection{Pseudo-Code}
 Non-Dominated-points(P)	\\*
 \{			\\*
-    \hspace*{1cm}P $\longrightarrow$ reverse_sort(P) //sort in descending order of Y  \\*
-    \hspace*{1cm} A[0]=P[0].x \\*
-    \hspace*{1cm} Layer[1].push() \\*
-	\hspace*{1cm} i=1; right=1 \\*
-    \hspace*{1cm}while(i<P.length())\\*
-    \hspace*{2cm} point = P[i]\\*
-    \hspace*{2cm} index = binary_search_predecessor(A, 0, right, point)\\*
-    \hspace*{2cm} Layer[index].push(point)\\*
-    \hspace*{2cm} A[index] = point.x\\*
+    \hspace*{1cm}$ P  \longrightarrow  reverse\_sort(P)$ //sort in descending order of Y  \\*
+    \hspace*{1cm} $ Layer[n]; A[n] $\\*
+    \hspace*{1cm} $ A[0]=P[0].x $\\*
+    \hspace*{1cm} $Layer[1].push()$ \\*
+	\hspace*{1cm} $i=1; right=1 $\\*
+    \hspace*{1cm} $while(i < P.length())$\\*
+    \hspace*{2cm} $point = P[i]$\\*
+    \hspace*{2cm} $index = binary\_search\_predecessor(A, 0, right, point)$ \\*
+    \hspace*{4cm}                // returns the predecessor's index \\*
+    \hspace*{2cm} $Layer[index].push(point)$\\*
+    \hspace*{2cm} $A[index] = point.x$\\*
+    \hspace*{2cm} $If (index > right ) right++ $\\*
+	\hspace*{1cm} $return  Layer $\\*
 	\\*
 \}
+\subsection{Time Complexity}
+  Sorting step takes $O(nlogn)$ time, followed by binary\_search for each point which takes $ logn $ time per point.
+  While iterates for all the points and in each iteration binary\_search is invoked, thus the loop takes $ n*logn $ time.
+  Overall algorithm takes time \\
+             $O(nlogn) + O(nlogn) = O(nlogn) $
+
 \section{ Open Rectangle Query }
 \subsection{Data Structure Design : } 
 Given an array 'a' of 'n' coordinate points, we construct a Binary Search Tree (BST) call it 'data' in the following manner.\\*
