@@ -9,7 +9,29 @@
 \maketitle
 \tableofcontents
 \newpage
+\section{Non-Dominated Points}
+\subsection{Overview}
+Given a set of coordinates P, we create list of each layer in the following manner.\\
+First sort the coordinates based on Y-coordinate in descending order. Then maintain an array A of size $n$. Start with the first coordinate from 
+the sorted array P(of all coordinates). This point will be a non-dominated point and will be a part of layer 1. Update the first index of A with the x-coordinate
+of this point. Now take the second point from P. If its x coordinate is greater than the x-coordinate of earlier point, it means that it will be part of layer
+1. If so then add it to layer 1 and update the layer 1's index in A. Otherwise it will be in second layer, so add it in layer 2 and update the layer 2's index 
+in A with it's x coordinate. Repeat the above procedure for all points.
 
+\subsection{Pseudo-Code}
+Non-Dominated-points(P)	\\*
+\{			\\*
+    \hspace*{1cm}P $\longrightarrow$ reverse_sort(P) //sort in descending order of Y  \\*
+    \hspace*{1cm} A[0]=P[0].x \\*
+    \hspace*{1cm} Layer[1].push() \\*
+	\hspace*{1cm} i=1; right=1 \\*
+    \hspace*{1cm}while(i<P.length())\\*
+    \hspace*{2cm} point = P[i]\\*
+    \hspace*{2cm} index = binary_search_predecessor(A, 0, right, point)\\*
+    \hspace*{2cm} Layer[index].push(point)\\*
+    \hspace*{2cm} A[index] = point.x\\*
+	\\*
+\}
 \section{ Open Rectangle Query }
 \subsection{Data Structure Design : } 
 Given an array 'a' of 'n' coordinate points, we construct a Binary Search Tree (BST) call it 'data' in the following manner.\\*
