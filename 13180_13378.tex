@@ -51,10 +51,13 @@ binary\_search\_predecessor(A, left, right, x)
              $O(nlogn) + O(nlogn) = O(nlogn) $
 \subsection{Proof of Correctness}
 \subsubsection{What is to be proved?}
-Starting from the top y coordinate if we have correctly assigned the layer numbers to k points, then we can correctly assign the layer number to the $k+1$th point as the layer number of the point with maximum x coordinate(of the seen k points) that is less than $k+1$th point.
-\subsubsection{Explanation}
-As we go along the iterations, we have partially constructed layers. If the new $k+1$th point lies between the $i$th and $i+1$th of these layers then it has to belong to layer $i$. 
-{\bf Reasoning by Contra}
+As we go along the iterations, say we have covered k points then, we have partially constructed layers. If the new $k+1$th point lies between the $i$th and $i+1$th (that is the $x$ predecessor of $k+1$ is the last point encountered in layer $i$) of these layers then it has to belong to layer $i$.
+\subsubsection{Reasoning by Contradiction}
+\begin{itemize}
+\item It cannot belong to any layer $>i$ as the layers are increasingly drawn in x.
+\item It cannot belong to any layer $<i$ as this point is clearly not dominated by the points in layer $i$ that is seen so far.
+\item Hence, The point should belong to layer $i$.
+\end{itemize}
 
 \newpage
 \section{ Open Rectangle Query }
@@ -140,18 +143,29 @@ binary\_search ($x$, type, y\_bottom, root)\\
 \hspace{2cm} repeat similarly for type=="right"
 
 \subsection{Space Complexity : }
-	The data structure we invented, is a BST of size N*(augmentation size).\\*
-Therefore, space used is $N * Log[n]$= n. (Refer Sub section Data Structure Design).
-Implying space complexity is O(n).
+The data structure we invented, is a BST of size $N*(augmentation\_size)$.\\*
+Therefore, space used is - (Refer Sub section Data Structure Design)
+\begin{itemize}
+\item Due to $x_{min}$,$x_{max}$ and flag augmentation - $N * O(1)$ \\*
+\item Due to short\_array augmentation - $N * Log(n)$ \\*
+\item Due to long\_array augmentation - at every level in the tree this augmentation takes $N$ space, implying a total of - $N * Log(n)$ \\*  
+\item Thus, overall space complexity is = \\*
+$O(N*Log(n)) = O(n)$ as $N = n/log(n)$.
+\end{itemize}
 \subsection{Time Complexity : }
 \subsubsection{Query Time : }
-!!!Not written!!!
+\begin{itemize}
+\item Locating the $x_1$ and $x_2$ in our BST takes O(Log(n)) time each.
+\item As we have $long\_{array}$ to skip all those nodes which don't have any point in range, we precisely traverse only to those nodes which can yield us atleast one point that is to be reported. Moreover, in each such node, we traverse the $short\_array$ from max to till $>=y_{bottom}$ is satisfied and this keeps our search within the bounds of O(k).
+\item Hence, overall time for a query is O(k+Log(n)). 
+\end{itemize}
 \subsubsection{Pre-processing Time : }
 \begin{itemize}
-\item The first sort based on x coordinates requires O(n*Log[n]).
-\item 
-\item
-\item
+\item The first sort based on x coordinates requires O(n*Log(n)).
+\item The construction of BST with all its augmentation requires - \\*
+$T(n) = 2*T(n/2) + an$ // O(n) to take care of the merging of the augmentations as described above \\*
+= O(n*Log(n))
+\item Hence, overall pre-processing requires O(n*log(n)).  
 
 \end{itemize}
 \subsection{Proof of Correctness}
@@ -162,8 +176,10 @@ Implying space complexity is O(n).
 \end{itemize}
 \subsubsection{Explanation}
 \begin{itemize}
-\item 
-\item As the array is getting sorted on the basis of x initially
+\item The array is getting sorted initially on the basis of x-coordinates and the chunks of $log(n)$ size are formed from this sorted array. The BST is constructed on these chunks based on their increasing x-range and hence, from the correctness of BST functioning, we are assured to get the correct x range when we traverse the BST on its basis.
+\item From the augmentation of the BST, we see that every $short\_array$ is sorted within on the basis of y-coordinates. Hence, on traversing it from max to min order till $y>=y_{bottom}$ ensures that we report points only within range.
+\item No point in the given range will get missed out as we do a search on the BST for x range (similar to one discussed in class) and as we traverse a sorted $short\_array$ till we satisfy $y>=y_{bottom}$. 
+\item Hence, this proves the correctness of the algorithm. 
 \end{itemize}
 \newpage
 \section{Constraint of each commando}
@@ -203,7 +219,7 @@ $ = O(n^2) $ \\*
 \end{center}
 \subsection{Proof of Correctness}
 \subsubsection{What is to be proved? or Claim}
-That given any square of side length 'n' (a power of 2)  and Prime Minister's office P we can exhaust the rest of the square with non overlapping pieces of L-shaped tiles ( L-shape containes 3 unit sqaures and hence is equivalent to the given problem).  \\*
+That given any square of side length 'n' (a power of 2)  and Prime Minister's office P we can exhaust the rest of the square with non overlapping pieces of L-shaped tiles ( L-shape containes 3 unit sqaures that can be guarded by a commando and hence is equivalent to the given problem).  \\*
 \subsubsection{Proof by Induction}
 Induction is carried out on the length of the square. \\*
 \subsubsection{Base Cases}
@@ -213,7 +229,7 @@ Induction is carried out on the length of the square. \\*
 \end{itemize}
 \subsubsection{Hypothesis}
 Let $ n = 2^{k} $. \\*
-Let us assume that the Claim is true for all $i<=k$ where $k>2$ and both are integers. \\*
+Let us assume that the Claim is true for all $i<=k$ where $k>1$ and both are integers. \\*
 \subsubsection{Inductive Step}
 Let us prove that claim for $ k+1 $ is true. \\*
 The square of size $2^{k+1}$ can be broken into four squares of size $2^{k}$. As the claim holds for sizes $<=k$, these 4 squares can be exhausted in the required way, (i.e) PM cabin anywhere we chose it to be and the rest exhausted with non overlapping 'L' shapes. \\*
