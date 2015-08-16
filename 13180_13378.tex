@@ -25,25 +25,37 @@ Non-Dominated-points(P)	\\*
     \hspace*{1cm}$ P  \longrightarrow  reverse\_sort(P)$ //sort in descending order of Y  \\*
     \hspace*{1cm} $ Layer[n]; A[n] $\\*
     \hspace*{1cm} $ A[0]=P[0].x $\\*
-    \hspace*{1cm} $Layer[1].push()$ \\*
+    \hspace*{1cm} $Layer[1].push(P[0])$ \\*
 	\hspace*{1cm} $i=1; right=1 $\\*
     \hspace*{1cm} $while(i < P.length())$\\*
     \hspace*{2cm} $point = P[i]$\\*
-    \hspace*{2cm} $index = binary\_search\_predecessor(A, 0, right, point)$ \\*
+    \hspace*{2cm} $index = binary\_search\_predecessor(A, 0, right, point.x)$ \\*
     \hspace*{4cm}                // returns the predecessor's index \\*
     \hspace*{2cm} $Layer[index].push(point)$\\*
     \hspace*{2cm} $A[index] = point.x$\\*
     \hspace*{2cm} $If (index > right ) right++ $\\*
 	\hspace*{1cm} $return  Layer $\\*
 	\\*
-\}
+\} \\
+\\
+binary\_search\_predecessor(A, left, right, x)
+\{ \\*
+\hspace*{1cm} If no entry in A is less than x, return $right+1$ \\*
+			 else return the index of maximum x coordinate less than x. \\*
+\} \\*
+
 \subsection{Time Complexity}
-  Sorting step takes $O(nlogn)$ time, followed by binary\_search for each point which takes $ logn $ time per point.
-  While iterates for all the points and in each iteration binary\_search is invoked, thus the loop takes $ n*logn $ time.
+  Sorting step takes $O(nlogn)$ time, followed by binary\_search for each point which takes maximum $ logn $ time per point.
+  $while$ iterates for all the points and in each iteration binary\_search is invoked, thus the loop takes $ n*logn $ time.
   Overall algorithm takes time \\
              $O(nlogn) + O(nlogn) = O(nlogn) $
 \subsection{Proof of Correctness}
-!!!Not written!!!
+\subsubsection{What is to be proved?}
+Starting from the top y coordinate if we have correctly assigned the layer numbers to k points, then we can correctly assign the layer number to the $k+1$th point as the layer number of the point with maximum x coordinate(of the seen k points) that is less than $k+1$th point.
+\subsubsection{Explanation}
+As we go along the iterations, we have partially constructed layers. If the new $k+1$th point lies between the $i$th and $i+1$th of these layers then it has to belong to layer $i$. 
+{\bf Reasoning by Contra}
+
 \newpage
 \section{ Open Rectangle Query }
 \subsection{Data Structure Design : } 
@@ -117,7 +129,16 @@ Implying space complexity is O(n).
 
 \end{itemize}
 \subsection{Proof of Correctness}
-!!!Not written!!!
+\subsubsection{What is to be proved?}
+\begin{itemize}
+\item Every point in the given range of $(x_1,y_1)$ and $(x_2,y_2)$ is getting reported.
+\item Every reported point is in the given range.
+\end{itemize}
+\subsubsection{Explanation}
+\begin{itemize}
+\item 
+\item As the array is getting sorted on the basis of x initially
+\end{itemize}
 \newpage
 \section{Constraint of each commando}
 \subsection{Overview}
