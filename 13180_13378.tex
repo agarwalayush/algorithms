@@ -91,12 +91,54 @@ two from its children and the third from itself(which has a pointer to itself).
 \end{itemize}
 \subsection{Pseudo Code : }
 
-return\_points(node n, y\_bottom)
-\{
-    \hspace{1cm}
-    for i in n.long\_array:
-        if i.y < y\_bottom :
-\}
+subtree\_points(node n, x1, x2, y\_bottom, flag)\\
+\{\\
+    \hspace{1cm}for i in n.long\_array:\\
+    \hspace{2cm}       if i.y < y\_bottom :\\
+    \hspace{3cm}                        print\_points(* i.pointer, x1, x2, y\_bottom)\\            
+\}\\
+\\
+print\_points(node n, x1, x2, y\_bottom, flag)\\
+\{\\
+    \hspace{1cm}  if flag==1:             //intermediate node \\
+    \hspace{1.5cm}for i in n.short\_array :\\
+    \hspace{2cm}    if(i $<$ y\_bottom) return;\\
+    \hspace{2cm}    else print i\\
+    \hspace{1cm}  else     //boundary node of the required range\\
+    \hspace{1.5cm}    for i in nth chunk in original array :\\
+    \hspace{2cm} if(x1 $<=$ i.x $<=$ x2 \&\& i.y >= y\_bottom) print i \\
+\}\\
+
+\emph{root} is the head of preprocessed binary tree \\
+query($x1, x2$ , y\_bottom, root)\\
+\hspace{1cm}
+\hspace{1cm}if x2 < root.x\_min\\:
+\hspace{2cm}    query($x1, x2$ , y\_bottom, root.left)\\
+\hspace{1cm}else if x1 > root.x\_max
+\hspace{2cm}    query($x1, x2$ , y\_bottom, root.right)\\
+\hspace{1cm}else if (x1, x2 belongs root) 
+\hspace{2cm} print\_points(root, x1, x2, y\_bottom, 0)  
+\hspace{1cm}else if (x1 belongs root)
+\hspace{1.5cm} print\_points(root, x1, x2, y\_bottom, 1)
+\hspace{1.5cm} binary\_search(x2, right, y\_bottom, root.right)
+\hspace{1cm}else if (x2 belongs root)
+\hspace{1.5cm} print\_points(root, x1, x2, y\_bottom, 1)
+\hspace{1.5cm} binary\_search(x1, left, y\_bottom, root.left)
+\hspace{1cm}else 
+\hspace{2cm}binary\_search(x1,left, y\_bottom, root.left)
+\hspace{2cm}binary\_search(x2,right, y\_bottom, root.right)
+
+binary\_search ($x$, type, y\_bottom, root)\\
+\hspace{1cm} if(type == "left")
+\hspace{2cm}    if(x1 < root.x\_min)
+\hspace{3cm}    subtree\_points(root.right, x1, infinite, y\_bottom, 0)
+\hspace{3cm}    binary($x$, left, y\_bottom, root.left)
+\hspace{2cm}    else if (x1 belongs root)
+\hspace{3cm}      print\_points(root, x1, infinite, y\_bottom, 0)
+\hspace{2cm}    else binary\_search ($x$, right, y\_bottom, root.right)\\
+\hspace{1cm}else 
+\hspace{2cm} repeat similarly for type=="right"
+
 \subsection{Space Complexity : }
 	The data structure we invented, is a BST of size N*(augmentation size).\\*
 Therefore, space used is $N * Log[n]$= n. (Refer Sub section Data Structure Design).
