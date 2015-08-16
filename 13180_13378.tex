@@ -101,18 +101,29 @@ return\_points(node n, y\_bottom)
         if i.y < y\_bottom :
 \}
 \subsection{Space Complexity : }
-	The data structure we invented, is a BST of size N*(augmentation size).\\*
-Therefore, space used is $N * Log[n]$= n. (Refer Sub section Data Structure Design).
-Implying space complexity is O(n).
+The data structure we invented, is a BST of size $N*(augmentation\_size)$.\\*
+Therefore, space used is - (Refer Sub section Data Structure Design)
+\begin{itemize}
+\item Due to $x_{min}$,$x_{max}$ and flag augmentation - $N * O(1)$ \\*
+\item Due to short\_array augmentation - $N * Log(n)$ \\*
+\item Due to long\_array augmentation - at every level in the tree this augmentation takes $N$ space, implying a total of - $N * Log(n)$ \\*  
+\item Thus, overall space complexity is = \\*
+$O(N*Log(n)) = O(n)$ as $N = n/log(n)$.
+\end{itemize}
 \subsection{Time Complexity : }
 \subsubsection{Query Time : }
-!!!Not written!!!
+\begin{itemize}
+\item Locating the $x_1$ and $x_2$ in our BST takes O(Log(n)) time each.
+\item As we have $long\_{array}$ to skip all those nodes which don't have any point in range, we precisely traverse only to those nodes which can yield us atleast one point that is to be reported. Moreover, in each such node, we traverse the $short\_array$ from max to till $>=y_{bottom}$ is satisfied and this keeps our search within the bounds of O(k).
+\item Hence, overall time for a query is O(k+Log(n)). 
+\end{itemize}
 \subsubsection{Pre-processing Time : }
 \begin{itemize}
-\item The first sort based on x coordinates requires O(n*Log[n]).
-\item 
-\item
-\item
+\item The first sort based on x coordinates requires O(n*Log(n)).
+\item The construction of BST with all its augmentation requires - \\*
+$T(n) = 2*T(n/2) + an$ // O(n) to take care of the merging of the augmentations as described above \\*
+= O(n*Log(n))
+\item Hence, overall pre-processing requires O(n*log(n)).  
 
 \end{itemize}
 \subsection{Proof of Correctness}
@@ -123,8 +134,10 @@ Implying space complexity is O(n).
 \end{itemize}
 \subsubsection{Explanation}
 \begin{itemize}
-\item 
-\item As the array is getting sorted on the basis of x initially
+\item The array is getting sorted initially on the basis of x-coordinates and the chunks of $log(n)$ size are formed from this sorted array. The BST is constructed on these chunks based on their increasing x-range and hence, from the correctness of BST functioning, we are assured to get the correct x range when we traverse the BST on its basis.
+\item From the augmentation of the BST, we see that every chunk is sorted within on the basis of y-coordinates. Hence, on traversing it from max to min order till $y>=y_{bottom}$ ensures that we report points only within range.
+\item No point in the given range will get missed out as we do a search on the BST for x range (similar to one discussed in class) and as we traverse a sorted y chunk till we satisfy $y>=y_{bottom}$. 
+\item Hence, this proves the correctness of the algorithm. 
 \end{itemize}
 \newpage
 \section{Constraint of each commando}
