@@ -113,4 +113,50 @@ Implying space complexity is O(n).
 \item
 
 \end{itemize}
+\section{Constraint of each commando}
+\subsection{Overview}
+This problem is approached using the divide and conquer strategy. As the square dimension is in powers of 2, we can divide the square we get in every iteration into 4 squares of equal size. Let 'P' = p(x,y) be the coordinates of Prime Minster's cabin. Define a recursive function Report(Square,n,P) which works by divide and conquer. Where 'Square' gives the square boundaries and 'n' gives its side length. 
+\subsection{Algorithm}
+\begin{itemize}
+\item Start.
+\item {\bf if($n<2$)} return with reporting "No points"
+\item {\bf else if($n==2$)} return position of commando as the one diametrically opposite to P in the square. Orientation will be facing P so that he can cover the L-shape leaving out Prime minister's office.
+\item {\bf else} divide the square into four equal squares of side length n/2. $P_1$, $P_2$, $P_3$ and $P_4$ are estimated as follows. The quadrant that has P currently will retain it as its $P_1$ and this square is called ${Square}_1$. The other three quadrants will have their $P_i$ to be the point that is diametrically opposite to the only corner that they have of the bigger square. where $ i \in \{2,3,4\} $.
+\item Report(n,P,Square) = Report(n/2,$P_1$,${Square}_1$) + Report(n/2,$P_2$,${Square}_2$) + Report(n/2,$P_3$,${Square}_3$) + Report(n/2,$P_4$,${Square}_4$) + the commando position and orientation who can cover $P_2$, $P_3$ and $P_4$. 
+\item Stop.
+\subsection{Pseudo Code}
+Report(n,P)	\\*
+\{			\\*
+	\hspace*{1cm}if($n<2$) \\*
+	\hspace*{2cm} print "No Commandos required". return \\*
+	\\*
+	\hspace*{1cm}else if($n==2$)\\*
+	\hspace*{2cm}Return Position =  diametrically opposite point to P. \\*
+	\hspace*{2cm}and Orientation = direction facing P. return\\*
+	\\*
+	\hspace*{1cm}else \\*
+	\hspace*{2cm}$P_1$ = P and ${Square}_1$ is the corresponding Square.\\*
+	\hspace*{2cm}Find ${Square}_i$ and $P_i$ as defined above.where $ i \in \{2,3,4\} $.\\*
+	\begin{center}
+	Report(n,P,Square) = Report(n/2,$P_1$,${Square}_1$) + Report(n/2,$P_2$,${Square}_2$) + Report(n/2,$P_3$,${Square}_3$) + Report(n/2,$P_4$,${Square}_4$) + the commando position and orientation who can cover $P_2$, $P_3$ and $P_4$. \\*
+	\end{center}
+	\hspace*{1cm}return \\*
+\}
+\subsection{Time Complexity}
+\begin{center}
+$ T(n) = 4*T(n/2) + a $ \\*
+$ = 4^{log(n)} + constant $ \\*
+$ = O(n^2) $ \\*
+\end{center}
+\subsection{Proof of Correctness}
+{\bf Proof by Induction \\*}
+Induction is carried out on the length of the square. \\*
+{\bf Base Cases \\*}
+\begin{itemize}
+\item $(n<2)$ - No commandos needed. \\*
+\item $(n==2)$ - Only one commando needed and he should be placed so as to cover 'L' shape that leaves out Prime Minister's cabin. \\*
+\end{itemize}
+{\bf Hypothesis \\*}
+
+\end{itemize}
 \end{document}
