@@ -135,8 +135,8 @@ $T(n) = 2*T(n/2) + an$ // O(n) to take care of the merging of the augmentations 
 \subsubsection{Explanation}
 \begin{itemize}
 \item The array is getting sorted initially on the basis of x-coordinates and the chunks of $log(n)$ size are formed from this sorted array. The BST is constructed on these chunks based on their increasing x-range and hence, from the correctness of BST functioning, we are assured to get the correct x range when we traverse the BST on its basis.
-\item From the augmentation of the BST, we see that every chunk is sorted within on the basis of y-coordinates. Hence, on traversing it from max to min order till $y>=y_{bottom}$ ensures that we report points only within range.
-\item No point in the given range will get missed out as we do a search on the BST for x range (similar to one discussed in class) and as we traverse a sorted y chunk till we satisfy $y>=y_{bottom}$. 
+\item From the augmentation of the BST, we see that every $short\_array$ is sorted within on the basis of y-coordinates. Hence, on traversing it from max to min order till $y>=y_{bottom}$ ensures that we report points only within range.
+\item No point in the given range will get missed out as we do a search on the BST for x range (similar to one discussed in class) and as we traverse a sorted $short\_array$ till we satisfy $y>=y_{bottom}$. 
 \item Hence, this proves the correctness of the algorithm. 
 \end{itemize}
 \newpage
