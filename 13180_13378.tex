@@ -67,55 +67,39 @@ Given an array 'a' of 'n' coordinate points, we construct a Binary Search Tree (
 \item Sort the array 'a' w.r.t the x-coordinates of the points. Call this sorted array 'b'.
 \item Divide 'b' into $ \frac{n}{Log[n]} $ parts, starting from the beginning. Index each of the part incrementally from 1 to $ \frac{n}{Log[n]} $. 
 \item Construct BST 'data' with $ \frac{n}{Log[n]} = N $ nodes from 'b' using the above indexing for the comparisons.
-\item Now, we have a BST 'data' with 'N' nodes augmented with an array of $Log[n]$ size at every node. Sort this array at every node on basis of y-coordinates of the points.
+\item Now, we have a BST 'data' with 'N' nodes augmented with an array of $Log[n]$ size at every node and, also
+    x\_min and x\_max of its $logn$ chunk. Sort this array at every node on basis of y-coordinates of the points.
+\item Every node is augmented with another inversely sorted array of y\_max(maximum y coordinate of each logn size array)
+    of each of the nodes belonging to the subtree, accompanied by a pointer to that node. 
+    In short a node at level i from the bottom will be augmented with two arrays, one of size $logn$ say short\_array
+    which contains the sorted array of according to y, other will be an array of size $2^i$ say long\_array.
 \item This completes the description of augmented BST 'data'.
 \end{itemize}
-\section*{Given Array 'a'}
-\hspace{-4.8cm}
-\begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-\hline
-\cellcolor{red} (13,1) & (4,2) & (11,3) & (2,4) & \cellcolor{red} (8,5) & (9,6) & (5,7) & (14,8) & \cellcolor{red} (3,9) & (12,10) & (10,11) & (6,12) & \cellcolor{red} (1,13) & (16,14) & (15,15) & (7,16) \\ \hline
-\end{tabular}
-\section*{Sorted Array 'b' based on x coordinates}
-\hspace{-4.8cm}
-\begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-\hline
-\cellcolor{red} (1,13) & (2,4) & (3,9) & (4,2) & \cellcolor{red} (5,7) & (6,12) & (7,16) & (8,5) & \cellcolor{red} (9,6) & (10,11) & (11,3) & (12,10) & \cellcolor{red} (13,1) & (14,8) & (15,15) & (16,14) \\ \hline
-\end{tabular}
-\section*{BST 'data' constructed for this example}
-\includegraphics[scale=1]{bst.pdf}
-\subsection{Algorithm : }
+
+\subsection{Preprocessing : }
 \begin{itemize}
 \item[\bf STEP 1 : ]
 Start
 \item[\bf STEP 2 : ]
-If($x_2 - x_1 < 2*(Log[n]) $, traverse elements in this range of x and return the points satisfying $y > y_{bottom}$. \\*
-else Initialise variables node\_i to the x value of nearest node ahead of $x_1$ and node\_j to the x value of nearest node behind $x_2$.
+Make a bst as specified above with each node having $logn$ size sorted array of its chunk. For the other array
+start traversing from the leaf node. 
+The leaf node will have will have only one entry in its long\_array, i.e, the maximum y coordinate in its logn chunk,
+and the pointer to itself. 
 \item[\bf STEP 3 : ]
-Find the elements satisfying $y > y_{bottom}$ in the x range $x_1$ to node\_i and in x range node\_j to $x_2$, and report them.
+Now consider the parent node of this leaf node. It will have 3 entries in its long\_array in the sorted order, 
+two from its children and the third from itself(which has a pointer to itself). 
 \item[\bf STEP 4 : ]
-Find the elements satisfying $y > y_{bottom}$ in the x range node\_i to node\_j and report them.
-\item[\bf STEP 5 : ]
-Stop.
+    At any non-leaf node, merge the long\_array of its two children and its y\_max (as in merge sort).
+
 \end{itemize}
 \subsection{Pseudo Code : }
-Report\_points($x_1,x_2,y_bottom$)	\\*
-\{			\\*
-	\hspace*{1cm}if($ x_2-x_1 <2*(Log[n])$) \\*
-	\hspace*{2cm} Locate the required x range in the BST. \\*
-	\hspace*{2cm}Report elements between that x range satisfying $y > y_{bottom}$ using binary search \\*
-	\\*
-	\hspace*{1cm}else if($x_1$ and $x_2$ exists in data points)\\*
-	\hspace*{2cm} Locate the required x range in the BST. \\*
-	\hspace*{2cm}Report elements between that x range satisfying $y > y_{bottom}$ using binary search \\*
-	\\*
-	\hspace*{1cm}else \\*
-	\hspace*{1cm}node\_i $ \longrightarrow $ x value of the nearest node ahead of $x_1$ \\*
-	\hspace*{1cm}node\_j $ \longrightarrow $  x value of the nearest node before $x_2$ \\*
-	\hspace*{1cm}report\_i $ = $ Report\_points($x_1$, node\_i, $y_{bottom}$)		\\*
-	\hspace*{1cm}report\_j $ = $ Report\_points(node\_j, $x_2$, $y_{bottom}$)		\\*
-	\hspace*{1cm}report\_rest $ = $ Report\_points(node\i, node\j, $y_{bottom}$)		\\*
-\}	 
+
+return\_points(node n, y\_bottom)
+\{
+    \hspace{1cm}
+    for i in n.long\_array:
+        if i.y < y\_bottom :
+\}
 \subsection{Space Complexity : }
 	The data structure we invented, is a BST of size N*(augmentation size).\\*
 Therefore, space used is $N * Log[n]$= n. (Refer Sub section Data Structure Design).
