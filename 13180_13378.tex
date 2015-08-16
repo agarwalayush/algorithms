@@ -51,10 +51,13 @@ binary\_search\_predecessor(A, left, right, x)
              $O(nlogn) + O(nlogn) = O(nlogn) $
 \subsection{Proof of Correctness}
 \subsubsection{What is to be proved?}
-Starting from the top y coordinate if we have correctly assigned the layer numbers to k points, then we can correctly assign the layer number to the $k+1$th point as the layer number of the point with maximum x coordinate(of the seen k points) that is less than $k+1$th point.
-\subsubsection{Explanation}
-As we go along the iterations, we have partially constructed layers. If the new $k+1$th point lies between the $i$th and $i+1$th of these layers then it has to belong to layer $i$. 
-{\bf Reasoning by Contra}
+As we go along the iterations, say we have covered k points then, we have partially constructed layers. If the new $k+1$th point lies between the $i$th and $i+1$th (that is the $x$ predecessor of $k+1$ is the last point encountered in layer $i$) of these layers then it has to belong to layer $i$.
+\subsubsection{Reasoning by Contradiction}
+\begin{itemize}
+\item It cannot belong to any layer $>i$ as the layers are increasingly drawn in x.
+\item It cannot belong to any layer $<i$ as this point is clearly not dominated by the points in layer $i$ that is seen so far.
+\item Hence, The point should belong to layer $i$.
+\end{itemize}
 
 \newpage
 \section{ Open Rectangle Query }
@@ -177,7 +180,7 @@ $ = O(n^2) $ \\*
 \end{center}
 \subsection{Proof of Correctness}
 \subsubsection{What is to be proved? or Claim}
-That given any square of side length 'n' (a power of 2)  and Prime Minister's office P we can exhaust the rest of the square with non overlapping pieces of L-shaped tiles ( L-shape containes 3 unit sqaures and hence is equivalent to the given problem).  \\*
+That given any square of side length 'n' (a power of 2)  and Prime Minister's office P we can exhaust the rest of the square with non overlapping pieces of L-shaped tiles ( L-shape containes 3 unit sqaures that can be guarded by a commando and hence is equivalent to the given problem).  \\*
 \subsubsection{Proof by Induction}
 Induction is carried out on the length of the square. \\*
 \subsubsection{Base Cases}
@@ -187,7 +190,7 @@ Induction is carried out on the length of the square. \\*
 \end{itemize}
 \subsubsection{Hypothesis}
 Let $ n = 2^{k} $. \\*
-Let us assume that the Claim is true for all $i<=k$ where $k>2$ and both are integers. \\*
+Let us assume that the Claim is true for all $i<=k$ where $k>1$ and both are integers. \\*
 \subsubsection{Inductive Step}
 Let us prove that claim for $ k+1 $ is true. \\*
 The square of size $2^{k+1}$ can be broken into four squares of size $2^{k}$. As the claim holds for sizes $<=k$, these 4 squares can be exhausted in the required way, (i.e) PM cabin anywhere we chose it to be and the rest exhausted with non overlapping 'L' shapes. \\*
