@@ -25,7 +25,7 @@ class node{
 bool blueFunction (pair< pair<double,double>,double> i, pair< pair<double,double>,double> j) { return i.second < j.second; }
 bool redFunction (pair<double,double> i, pair<double,double> j) { return i.first < j.first; }
 
-void BST_insert(node * root, double key){
+node * BST_insert(node * root, double key){
 	//cout<<"welcome to insert function\n";
 	node *pt = new node;
         pt->x = key;
@@ -35,7 +35,7 @@ void BST_insert(node * root, double key){
 		//cout<<"First entry\n";
 		root = pt;
 		//cout<<"Assignment done\n";
-		return;
+		return root;
 	}
 	root->subtree_size ++;
 	if(key <= root->x){
@@ -54,11 +54,12 @@ void BST_insert(node * root, double key){
                 }
                 else BST_insert(root->right, key);
 	}
+	return root;
 }
 
-void BST_delete(node * root, double key){
+node * BST_delete(node * root, double key){
 	//cout<<"Welcome to delete function\n";
-	if(root == NULL) return;
+	if(root == NULL) return NULL;
 	root->subtree_size --;
 	if(key == root->x){
 		if(root->left == NULL){
@@ -89,6 +90,7 @@ void BST_delete(node * root, double key){
 	}
 	else if(key < root->x) BST_delete(root->left, key);
         else BST_delete(root->right, key);
+	return root;
 }
 
 long long int BST_count(node * root, double x1, double x2){
@@ -108,7 +110,6 @@ long long int BST_count(node * root, double x1, double x2){
 			ptr_x1 = ptr_x1->right;
 		}	
 	}
-	if(ptr_x1 == NULL) ptr_x1 = ptr_x1->parent;
 	node * LCA = NULL;
 	node * ptr_x2 = root;
 	//cout<<"Before while 2\n";
@@ -122,22 +123,43 @@ long long int BST_count(node * root, double x1, double x2){
                         ptr_x2 = ptr_x2->left;
                 }
         }
-	if(ptr_x2 == NULL) ptr_x2 = ptr_x2->parent;
 	//cout<<"After while 2\n";
-	if(ptr_x1->right != NULL) count = count + ptr_x1->right->subtree_size;
-	cout<<"Before while 3\n";
-	while(ptr_x1->parent != LCA && ptr_x1->parent != NULL){
-		count++;
-		if(ptr_x1->parent->left = ptr_x1)	count = count + ptr_x1->parent->right->subtree_size;
+	node * ptr = LCA;
+	if(ptr == root){
+		count = count + 1 + BST_count(root->left, x1, 2.0) + BST_count(root->right, x2, -1.0);
+		return count;
 	}
-	//count ++; // To include LCA
-	cout<<"After while 3\n";
-	if(ptr_x2->left !=NULL) count = count + ptr_x2->left->subtree_size;
-	//cout<<"Before while 4\n";
-	while(ptr_x2->parent != LCA && ptr_x2->parent != NULL){
-                count++;
-                if(ptr_x2->parent->right = ptr_x2)       count = count + ptr_x2->parent->left->subtree_size;
+	//cout<<"LCA is not root\n";
+	while(ptr!=NULL){
+                if(ptr->x == x1){ 
+                        count = (ptr->right == NULL)? count +1 : count + ptr->right->subtree_size +1;
+                        break;
+                }
+                else if(ptr->x < x1){
+                        ptr = ptr->right;
+                }
+                else{
+                        count = (ptr->right == NULL)? count +1 : count + ptr->right->subtree_size +1;
+			ptr = ptr->left;
+                }
         }
+	//cout<<"After while 3\n";
+	ptr = LCA;
+	while(ptr!=NULL){
+		if(ptr->x == x2){
+			count = (ptr->left == NULL)? count +1 : count + ptr->left->subtree_size +1;
+			break;
+		}
+		else if(ptr->x > x2){
+			ptr = ptr->left;
+		}
+		else{
+			count = (ptr->left == NULL)? count +1 : count + ptr->left->subtree_size +1;
+			ptr = ptr->right;
+		} 
+	}
+	//cout<<"After while 4\n";
+	count --; // As LCA would have been included twice
 	return count;
 }
 
@@ -147,18 +169,14 @@ long long int FindCount(){
 	vector<pair<double,double> >::iterator v=violet.begin();
 	long long int count = 0;
 	while(b!=blue.end()){
-		if(y!=yellow.end() && (*b).second > (*y).first){
-			node *pt = new node;
-			pt->x = (*y).second;
-			pt->left = pt->parent = pt->right = NULL;
-			pt->subtree_size = 0;
+		if(y!=yellow.end() && (*b).second >= (*y).first){
 			//cout<<"before insert\n";
-			BST_insert(root,(*y).second);
+			root = BST_insert(root,(*y).second);
 			++y;
 		}
 		while(((*b).second>(*v).first)&&(v!=violet.end())){
 			//cout<<"before delete\n";
-			BST_delete(root,(*v).second);
+			root = BST_delete(root,(*v).second);
 			++v;
 		}
 		count = count + BST_count(root,(*b).first.first, (*b).first.second);
@@ -178,7 +196,7 @@ int main(){
 	pair<double,double> A2;
 	pair<double,double> A3;
 	scanf("%lld",&n);
-	long long int test_cases = 100000000/n;
+	long long int test_cases = 1 ;//100000000/n;
 	while(test_cases --){
 			root = NULL;
 // Blue lines input is taken first, in the format x1 x2 y\n
