@@ -121,11 +121,13 @@ node * BST_delete(node * root, double key){
 			if(DEBUG_DELETE) cout<<"inside Else\n";
 			node * ptr = root->left;
 			if(ptr->right==NULL){
+				if(DEBUG_DELETE) cout<<"inside If\n";
 				root->x = ptr->x;
 				root->left = ptr->left;
 				root->left->parent = root;
 			}
 			else{	
+				if(DEBUG_DELETE) cout<<"inside Else\n";
 				while(ptr->right!= NULL){
 					ptr->subtree_size --;
 					ptr = ptr->right;
@@ -134,6 +136,7 @@ node * BST_delete(node * root, double key){
 				ptr->parent->right = ptr->left;
 				ptr->left->parent = ptr->parent;
 			}
+			if(DEBUG_DELETE) cout<<"Ending Else\n";
 			delete(ptr);
 			ptr = NULL;
 		}	
