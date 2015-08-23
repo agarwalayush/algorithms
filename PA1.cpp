@@ -278,16 +278,22 @@ int main_test(){
     BST_delete(root, 15);
 }
 
-void main(){
-    int value = {10,5,15,2,7,12,17,1,3,6};
-    int i = 0;
+int main(){
+    //int A[] = {10,5,15,2,7,12,17,1,3,6,100,-500,460,123,-46,13,8};
+    
+    int i = 0,n;
+    cin>>n;
+    int A[n];
     root = NULL;
-    while(i<10){
+    while(i<n){
+        A[i]=rand();
 		root = BST_insert(root,A[i]);
 		i++;
     }
-    while(i<10){
+    i=0;
+    while(i<n){
 		root = BST_delete(root,A[i]);
+        i++;
     }
 }
 
