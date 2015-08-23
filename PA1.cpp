@@ -108,6 +108,7 @@ long long int BST_count(node * root, double x1, double x2){
 			ptr_x1 = ptr_x1->right;
 		}	
 	}
+	if(ptr_x1 == NULL) ptr_x1 = ptr_x1->parent;
 	node * LCA = NULL;
 	node * ptr_x2 = root;
 	//cout<<"Before while 2\n";
@@ -121,8 +122,9 @@ long long int BST_count(node * root, double x1, double x2){
                         ptr_x2 = ptr_x2->left;
                 }
         }
+	if(ptr_x2 == NULL) ptr_x2 = ptr_x2->parent;
 	//cout<<"After while 2\n";
-	if(ptr_x1 !=NULL && ptr_x1->right != NULL) count = count + ptr_x1->right->subtree_size;
+	if(ptr_x1->right != NULL) count = count + ptr_x1->right->subtree_size;
 	cout<<"Before while 3\n";
 	while(ptr_x1->parent != LCA && ptr_x1->parent != NULL){
 		count++;
@@ -130,7 +132,7 @@ long long int BST_count(node * root, double x1, double x2){
 	}
 	//count ++; // To include LCA
 	cout<<"After while 3\n";
-	if(ptr_x2 != NULL && ptr_x2->left !=NULL) count = count + ptr_x2->left->subtree_size;
+	if(ptr_x2->left !=NULL) count = count + ptr_x2->left->subtree_size;
 	//cout<<"Before while 4\n";
 	while(ptr_x2->parent != LCA && ptr_x2->parent != NULL){
                 count++;
