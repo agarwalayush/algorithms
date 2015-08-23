@@ -278,7 +278,20 @@ int main_test(){
     BST_delete(root, 15);
 }
 
-int main(){
+void main(){
+    int value = {10,5,15,2,7,12,17,1,3,6};
+    int i = 0;
+    root = NULL;
+    while(i<10){
+		root = BST_insert(root,A[i]);
+		i++;
+    }
+    while(i<10){
+		root = BST_delete(root,A[i]);
+    }
+}
+
+int main1(){
 	srand (static_cast <unsigned> (time(0)));
 	long long int n,count;
 	double ans = 0.0;
