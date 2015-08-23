@@ -84,6 +84,7 @@ node * BST_delete(node * root, double key){
 	if(key == root->x){
 		if(DEBUG_DELETE) cout<<"Inside the base case of delete\n";
 		if(root->left == NULL){
+			if(DEBUG_DELETE) cout<<"Inside left\n";
 			node *ptr = root;
 			if(ptr->parent == NULL) root = ptr->right;
 			else if(ptr->parent->left == ptr){
@@ -100,6 +101,7 @@ node * BST_delete(node * root, double key){
 			ptr = NULL;
 		}
 		else if(root->right == NULL){
+			if(DEBUG_DELETE) cout<<"Inside right\n";
 			node *ptr = root;
 			if(ptr->parent == NULL) root = ptr->left;
 			else if(ptr->parent->left = ptr){
@@ -110,12 +112,13 @@ node * BST_delete(node * root, double key){
                         else{
 				root = ptr->left;
 				ptr->parent->right = ptr->left;
-				ptr->left->parent = ptr->left;
+				ptr->left->parent = ptr->parent;
 			}
 			delete(ptr);
 			ptr = NULL;
                 }	
 		else{
+			if(DEBUG_DELETE) cout<<"inside Else\n";
 			node * ptr = root->left;
 			if(ptr->right==NULL){
 				root->x = ptr->x;
