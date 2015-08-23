@@ -202,7 +202,7 @@ long long int FindCount(){
 	vector<pair<double,double> >::iterator v=violet.begin();
 	long long int count = 0;
 	while(b!=blue.end()&& v!=violet.end()){
-		if(y!=yellow.end() && (*b).second >= (*y).first){
+		while(y!=yellow.end() && (*b).second >= (*y).first){
 			if(DEBUG_FINDCOUNT)	cout<<"before insert\n";
 			root = BST_insert(root,(*y).second);
 			++y;
