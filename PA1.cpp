@@ -4,10 +4,10 @@
 using namespace std;
 
 #define tr(c,i) for(typeof(c.begin()) i = (c).begin(); i != (c).end(); i++)
-#define DEBUG_MAIN 0
+#define DEBUG_MAIN 1
 #define DEBUG_INSERT 0
 #define DEBUG_SEARCH 0
-#define DEBUG_DELETE 0
+#define DEBUG_DELETE 1
 #define DEBUG_COUNT 0
 #define DEBUG_FINDCOUNT 1
 
@@ -40,13 +40,14 @@ node * BST_search(node * root, double key){
 	node * ptr = root;
 	while(ptr!=NULL){
 		if(ptr->x == key)	return ptr;
-		else if(ptr->x >= key)	ptr = ptr->left; 
+		else if(ptr->x > key)	ptr = ptr->left; 
 		else  ptr = ptr->right;
 	}
 	return NULL;
 }
 
 node * BST_insert(node * root, double key){
+	cout<<"key inserted : "<<key<<endl;
 	if(DEBUG_INSERT)	cout<<"welcome to insert function\n";
 	if(root == NULL){
 		node *pt = new node;
@@ -55,6 +56,7 @@ node * BST_insert(node * root, double key){
         	pt->parent = NULL;
         	pt->right = NULL;
         	pt->subtree_size = 1;
+		pt->count =1;
 		if(DEBUG_INSERT)	cout<<"First entry\n";
 		root = pt;
 		if(DEBUG_INSERT)	cout<<"Assignment done\n";
@@ -66,9 +68,9 @@ node * BST_insert(node * root, double key){
 			node *pt = new node;
         		pt->x = key;
         		pt->left = NULL;
-        		pt->parent = NULL;
         		pt->right = NULL;
         		pt->subtree_size = 1;
+			pt->count =1;
 			if(DEBUG_INSERT)	cout<<"Insert left\n";
 			pt->parent = root;
 			root->left = pt;
@@ -80,7 +82,7 @@ node * BST_insert(node * root, double key){
 			node *pt = new node;
         		pt->x = key;
         		pt->left = NULL;
-        		pt->parent = NULL;
+ 			pt->count =1;
        			pt->right = NULL;
         		pt->subtree_size = 1;
 			if(DEBUG_INSERT)	cout<<"Insert right\n";
@@ -118,6 +120,7 @@ node * BST_delete(node * root, double key){
 				ptr->parent->right = ptr->right;
 				if(ptr->right != NULL)	ptr->right->parent = ptr->parent;
 			}
+			cout<<"Key deleted : "<<ptr->x<<endl;
 			free(ptr);
 			ptr = NULL;
 		}
@@ -138,6 +141,7 @@ node * BST_delete(node * root, double key){
 				ptr->parent->right = ptr->left;
 				if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
 			}
+			cout<<"Key deleted : "<<ptr->x<<endl;
 			free(ptr);
 			ptr = NULL;
                 }		
@@ -161,6 +165,7 @@ node * BST_delete(node * root, double key){
 				if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
 			}
 			if(DEBUG_DELETE) cout<<"Ending Else\n";
+			cout<<"Key deleted : "<<ptr->x<<endl;
 			free(ptr);
 			ptr = NULL;
 		}	
@@ -247,7 +252,6 @@ long long int BST_count(node * root, double x1, double x2){
 	        }   
         }
 	if(DEBUG_COUNT)	cout<<"After while 4\n";
-	//if(LCA->x >= x1 && LCA->x <= x2) count --; // As LCA would have got included twice in this case
 	if(DEBUG_COUNT) cout<<"Exit BST_count\n";
 	return count;
 }
@@ -301,8 +305,8 @@ long long int FindCount(){
 				}
 			}
 			else {
-                cout<<key<<" ERROR IN CODE!!!!!!!\n";
-            }
+				cout<<" ERROR IN CODE!!!!!!!\n";
+            		}
 			++v;
 		}
        // cout<<"end of first iteration in FindCount"<<endl;
@@ -389,13 +393,13 @@ int main(){
 		sort (violet.begin(), violet.end(), redFunction);
         if(DEBUG_MAIN){
             tr(blue,i){
-                ;//cout<<"blue"<<" "<< (*i).first.first <<" "<< (*i).first.second<<" "<<(*i).second<<endl;
+                cout<<"blue"<<" "<< (*i).first.first <<" "<< (*i).first.second<<" "<<(*i).second<<endl;
             }
             tr(yellow,i){
-                ;//cout<<"yellow"<<" "<< (*i).first <<" "<< (*i).second<<endl;
+                cout<<"yellow"<<" "<< (*i).first <<" "<< (*i).second<<endl;
             }
             tr(violet,i){
-                ;//cout<<"violet"<<" "<< (*i).first <<" "<< (*i).second<<endl;
+                cout<<"violet"<<" "<< (*i).first <<" "<< (*i).second<<endl;
             }
         }
 		count = FindCount();
