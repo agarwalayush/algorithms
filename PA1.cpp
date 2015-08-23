@@ -197,37 +197,43 @@ long long int BST_count(node * root, double x1, double x2){
 	if(DEBUG_COUNT && LCA == NULL) cout<<"LCA is NULL \n";
 	if(DEBUG_COUNT)	cout<<"After while 2\n";
 	node * ptr = LCA;
-	while(ptr!=NULL){
-                if(ptr->x == x1){ 
-                        count = (ptr->right == NULL)? count +1 : count + ptr->right->subtree_size +1;
-                        break;
-                }
-                else if(ptr->x < x1){
+    cout<< ptr->x <<endl;
+    if(LCA->x >= x1 && LCA->x <= x2)
+    {
+        count++;
+        ptr=LCA->left;    
+        while(ptr!=NULL){
+                    if(ptr->x == x1){ 
+                            count = (ptr->right == NULL)? count +1 : count + ptr->right->subtree_size +1;
+                            break;
+                 }
+                    else if(ptr->x < x1){
                         ptr = ptr->right;
-                }
-                else{
-                        count = (ptr->right == NULL)? count +1 : count + ptr->right->subtree_size +1;
-			ptr = ptr->left;
-                }
+                    }
+                    else{
+                            count = (ptr->right == NULL)? count +1 : count + ptr->right->subtree_size +1;
+		     	ptr = ptr->left;
+                    }
         }
-	if(DEBUG_COUNT && LCA == NULL) cout<<"LCA is NULL \n";
-	if(DEBUG_COUNT)	cout<<"After while 3\n";
-	ptr = LCA;
-	while(ptr!=NULL){
-		if(ptr->x == x2){
-			count = (ptr->left == NULL)? count +1 : count + ptr->left->subtree_size +1;
-			break;
-		}
-		else if(ptr->x > x2){
-			ptr = ptr->left;
-		}
-		else{
-			count = (ptr->left == NULL)? count +1 : count + ptr->left->subtree_size +1;
-			ptr = ptr->right;
-		} 
-	}
+    	if(DEBUG_COUNT && LCA == NULL) cout<<"LCA is NULL \n";
+	    if(DEBUG_COUNT)	cout<<"After while 3\n";
+	    ptr = LCA->right;
+        while(ptr!=NULL){
+		        if(ptr->x == x2){
+			        count = (ptr->left == NULL)? count +1 : count + ptr->left->subtree_size +1;
+        			break;
+	        	}
+		        else if(ptr->x > x2){
+			        ptr = ptr->left;
+		        }
+    		    else{
+	    		    count = (ptr->left == NULL)? count +1 : (count + ptr->left->subtree_size +1);
+		    	    ptr = ptr->right;
+		         } 
+	        }   
+        }
 	if(DEBUG_COUNT)	cout<<"After while 4\n";
-	if(LCA->x >= x1 && LCA->x <= x2) count --; // As LCA would have got included twice in this case
+	//if(LCA->x >= x1 && LCA->x <= x2) count --; // As LCA would have got included twice in this case
 	if(DEBUG_COUNT) cout<<"Exit BST_count\n";
 	return count;
 }
@@ -248,6 +254,7 @@ long long int FindCount(){
 			root = BST_delete(root,(*v).second);
 			++v;
 		}
+        cout<<"end of first iteration in FindCount"<<endl;
 		count = count + BST_count(root,(*b).first.first, (*b).first.second);
 		++b;
 		if(DEBUG_FINDCOUNT)	cout<<"The big while last step\n";
@@ -306,6 +313,10 @@ int main(){
         	}
 // Sort all the three vectors based on their Y-coordinates
 		
+        sort (blue.begin(), blue.end(), blueFunction);
+		sort (yellow.begin(), yellow.end(), redFunction);
+		sort (violet.begin(), violet.end(), redFunction);
+
         tr(blue,i){
             cout<<"blue"<<" "<< (*i).first.first <<" "<< (*i).first.second<<" "<<(*i).second<<endl;
         }
@@ -315,10 +326,6 @@ int main(){
         tr(violet,i){
             cout<<"violet"<<" "<< (*i).first <<" "<< (*i).second<<endl;
         }
-        sort (blue.begin(), blue.end(), blueFunction);
-		sort (yellow.begin(), yellow.end(), redFunction);
-		sort (violet.begin(), violet.end(), redFunction);
-
 		count = FindCount();
 		if(DEBUG_MAIN)	printf("%lld\n", count);
 		ans = ans + count;
