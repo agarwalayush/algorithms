@@ -61,11 +61,20 @@ node * BST_insert(node * root, double key){
 		return root;
 	}
 	node * exists = BST_search(root,key);
-	root->subtree_size ++;
 	if(exists != NULL){
-	 	exists->count++;
+		node * p = root;
+		while(p!=NULL){
+			p->subtree_size++;
+			if(p->x == key){
+				p->count++;
+				break;
+			}
+			else if(p->x >= key) p = p->left;
+			else	p = p->right;
+		}
 		return root;
 	}
+	root->subtree_size ++;
 	if(key <= root->x){
 		if(root->left == NULL){
 			node *pt = new node;
@@ -100,13 +109,22 @@ node * BST_insert(node * root, double key){
 node * BST_delete(node * root, double key){
 	if(DEBUG_DELETE)	cout<<"Welcome to delete function\n";
 	if(root == NULL) return NULL;
-	root->subtree_size --;
 	node * exists = BST_search(root,key);
 	if(exists != NULL){
 		if(exists->count >1){
-			exists->count--;
-			return 0;
+			node *p = root;
+			while(p!=NULL){
+                        	p->subtree_size--;
+                        	if(p->x == key){
+                                	p->count--;
+                                	break;
+                        	}
+                       		else if(p->x >= key) p = p->left;
+                        	else    p = p->right;
+                	}
+			return root;
 		}
+		root->subtree_size --;
 		if(key == root->x){
 			if(DEBUG_DELETE) cout<<"Inside the base case of delete\n";
 			if(root->left == NULL){
