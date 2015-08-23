@@ -4,7 +4,7 @@
 using namespace std;
 
 #define DEBUG_MAIN 0
-#define DEBUG_INSERT 0
+#define DEBUG_INSERT 1
 #define DEBUG_DELETE 1
 #define DEBUG_COUNT 1
 #define DEBUG_FINDCOUNT 1
@@ -86,13 +86,19 @@ node * BST_delete(node * root, double key){
 		if(root->left == NULL){
 			if(DEBUG_DELETE) cout<<"Inside left\n";
 			node *ptr = root;
-			if(ptr->parent == NULL) root = ptr->right;
+			if(ptr->parent == NULL){
+				if(DEBUG_DELETE)	cout<<"1\n";
+				root = ptr->right;
+				if(root	!= NULL)	root->parent = NULL;
+			}
 			else if(ptr->parent->left == ptr){
+				if(DEBUG_DELETE)	cout<<"2\n";
 				root = ptr->right;
 				ptr->parent->left = ptr->right;
 				if(ptr->right != NULL)	ptr->right->parent = ptr->parent;
 			}
 			else{
+				if(DEBUG_DELETE)	cout<<"3\n";
 				root = ptr->right;
 				ptr->parent->right = ptr->right;
 				if(ptr->right != NULL)	ptr->right->parent = ptr->parent;
@@ -103,7 +109,10 @@ node * BST_delete(node * root, double key){
 		else if(root->right == NULL){
 			if(DEBUG_DELETE) cout<<"Inside right\n";
 			node *ptr = root;
-			if(ptr->parent == NULL) root = ptr->left;
+			if(ptr->parent == NULL){
+				root = ptr->left;
+				root->parent = NULL;
+			}
 			else if(ptr->parent->left = ptr){
 				root = ptr->left;
 				ptr->parent->left = ptr->left;
