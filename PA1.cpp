@@ -3,6 +3,7 @@
 #include<cstdlib>
 using namespace std;
 
+#define tr(c,i) for(typeof(c.begin()) i = (c).begin(); i != (c).end(); i++)
 #define DEBUG_MAIN 0
 #define DEBUG_INSERT 1
 #define DEBUG_DELETE 1
@@ -254,7 +255,8 @@ long long int FindCount(){
 	return count;
 }
 
-void del_test(){
+int main_test(){
+    cout<<rand()<<endl<<rand()<<endl;
     node *root = new node;
     root->x =10;
     node *left = new node;
@@ -270,7 +272,7 @@ void del_test(){
 }
 
 int main(){
-	srand (static_cast <unsigned> (time(0)));
+	//srand (static_cast <unsigned> (time(0)));
 	long long int n,count;
 	double ans = 0.0;
 	double max = 1.0;
@@ -303,9 +305,20 @@ int main(){
 			if(DEBUG_MAIN)	printf("%lf %lf %lf %lf\n",A2.first, A2.second,A3.first,A3.second);
         	}
 // Sort all the three vectors based on their Y-coordinates
-		sort (blue.begin(), blue.end(), blueFunction);
+		
+        tr(blue,i){
+            cout<<"blue"<<" "<< (*i).first.first <<" "<< (*i).first.second<<" "<<(*i).second<<endl;
+        }
+        tr(yellow,i){
+            cout<<"yellow"<<" "<< (*i).first <<" "<< (*i).second<<endl;
+        }
+        tr(violet,i){
+            cout<<"violet"<<" "<< (*i).first <<" "<< (*i).second<<endl;
+        }
+        sort (blue.begin(), blue.end(), blueFunction);
 		sort (yellow.begin(), yellow.end(), redFunction);
 		sort (violet.begin(), violet.end(), redFunction);
+
 		count = FindCount();
 		if(DEBUG_MAIN)	printf("%lld\n", count);
 		ans = ans + count;
