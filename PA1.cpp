@@ -95,94 +95,78 @@ node * BST_insert(node * root, double key){
 node * BST_delete(node * root, double key){
 	if(DEBUG_DELETE)	cout<<"Welcome to delete function\n";
 	if(root == NULL) return NULL;
-	node * exists = BST_search(root,key);
-	if(exists != NULL){
-		if(exists->count >1){
-			node *p = root;
-			while(p!=NULL){
-                        	p->subtree_size--;
-                        	if(p->x == key){
-                                	p->count--;
-                                	break;
-                        	}
-                       		else if(p->x >= key) p = p->left;
-                        	else    p = p->right;
-                	}
-			return root;
-		}
-		root->subtree_size --;
-		if(key == root->x){
-			if(DEBUG_DELETE) cout<<"Inside the base case of delete\n";
-			if(root->left == NULL){
-				if(DEBUG_DELETE) cout<<"Inside left\n";
-				node *ptr = root;
-				if(ptr->parent == NULL){
-					if(DEBUG_DELETE)	cout<<"1\n";
-					root = ptr->right;
-					if(root	!= NULL)	root->parent = NULL;
-				}
-				else if(ptr->parent->left == ptr){
-					if(DEBUG_DELETE)	cout<<"2\n";
-					root = ptr->right;
-					ptr->parent->left = ptr->right;
-					if(ptr->right != NULL)	ptr->right->parent = ptr->parent;
-				}
-				else{
-					if(DEBUG_DELETE)	cout<<"3\n";
-					root = ptr->right;
-					ptr->parent->right = ptr->right;
-					if(ptr->right != NULL)	ptr->right->parent = ptr->parent;
-				}
-				free(ptr);
-				ptr = NULL;
+	root->subtree_size --;
+	if(key == root->x){
+		if(DEBUG_DELETE) cout<<"Inside the base case of delete\n";
+		if(root->left == NULL){
+			if(DEBUG_DELETE) cout<<"Inside left\n";
+			node *ptr = root;
+			if(ptr->parent == NULL){
+				if(DEBUG_DELETE)	cout<<"1\n";
+				root = ptr->right;
+				if(root	!= NULL)	root->parent = NULL;
 			}
-			else if(root->right == NULL){
-				if(DEBUG_DELETE) cout<<"Inside right\n";
-				node *ptr = root;
-				if(ptr->parent == NULL){
-					root = ptr->left;
-					root->parent = NULL;
-				}
-				else if(ptr->parent->left = ptr){
-					root = ptr->left;
-					ptr->parent->left = ptr->left;
-					if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
-				}
-                        	else{
-					root = ptr->left;
-					ptr->parent->right = ptr->left;
-					if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
-				}
-				free(ptr);
-				ptr = NULL;
-                	}		
+			else if(ptr->parent->left == ptr){
+				if(DEBUG_DELETE)	cout<<"2\n";
+				root = ptr->right;
+				ptr->parent->left = ptr->right;
+				if(ptr->right != NULL)	ptr->right->parent = ptr->parent;
+			}
 			else{
-				if(DEBUG_DELETE) cout<<"inside Else\n";
-				node * ptr = root->left;
-				if(ptr->right==NULL){
-					if(DEBUG_DELETE) cout<<"inside If\n";
-					root->x = ptr->x;
-					root->left = ptr->left;
-					if(root->left != NULL)	root->left->parent = root;
-				}
-				else{	
-					if(DEBUG_DELETE) cout<<"inside Else\n";
-					while(ptr->right!= NULL){
-						ptr->subtree_size --;
-						ptr = ptr->right;
-					}		
-					root->x = ptr->x;
-					ptr->parent->right = ptr->left;
-					if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
-				}
-				if(DEBUG_DELETE) cout<<"Ending Else\n";
-				free(ptr);
-				ptr = NULL;
-			}	
+				if(DEBUG_DELETE)	cout<<"3\n";
+				root = ptr->right;
+				ptr->parent->right = ptr->right;
+				if(ptr->right != NULL)	ptr->right->parent = ptr->parent;
+			}
+			free(ptr);
+			ptr = NULL;
 		}
-		else if(key < root->x) BST_delete(root->left, key);
-        	else BST_delete(root->right, key);
+		else if(root->right == NULL){
+			if(DEBUG_DELETE) cout<<"Inside right\n";
+			node *ptr = root;
+			if(ptr->parent == NULL){
+				root = ptr->left;
+				root->parent = NULL;
+			}
+			else if(ptr->parent->left = ptr){
+				root = ptr->left;
+				ptr->parent->left = ptr->left;
+				if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
+			}
+                        else{
+				root = ptr->left;
+				ptr->parent->right = ptr->left;
+				if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
+			}
+			free(ptr);
+			ptr = NULL;
+                }		
+		else{
+			if(DEBUG_DELETE) cout<<"inside Else\n";
+			node * ptr = root->left;
+			if(ptr->right==NULL){
+				if(DEBUG_DELETE) cout<<"inside If\n";
+				root->x = ptr->x;
+				root->left = ptr->left;
+				if(root->left != NULL)	root->left->parent = root;
+			}
+			else{	
+				if(DEBUG_DELETE) cout<<"inside Else\n";
+				while(ptr->right!= NULL){
+					ptr->subtree_size --;
+					ptr = ptr->right;
+				}		
+				root->x = ptr->x;
+				ptr->parent->right = ptr->left;
+				if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
+			}
+			if(DEBUG_DELETE) cout<<"Ending Else\n";
+			free(ptr);
+			ptr = NULL;
+		}	
 	}
+	else if(key < root->x) BST_delete(root->left, key);
+        else BST_delete(root->right, key);
 	if(DEBUG_DELETE)        cout<<"Closing delete\n";
 	return root;
 }
@@ -297,7 +281,26 @@ long long int FindCount(){
 		}
 		while(((*b).second>(*v).first)&&(v!=violet.end())){
 			if(DEBUG_FINDCOUNT)	cout<<"before delete\n";
-			root = BST_delete(root,(*v).second);
+			double key = (*v).second;
+			node * exists = BST_search(root,key);
+			if(exists != NULL){
+				if(exists->count >1){
+					node *p = root;
+					while(p!=NULL){
+                        			p->subtree_size--;
+                        			if(p->x == key){
+                                			p->count--;
+                                			break;
+                        			}
+                       				else if(p->x >= key) p = p->left;
+                        			else    p = p->right;
+                			}
+				}
+				else{
+					root = BST_delete(root,key);
+				}
+			}
+			else cout<<"ERROR IN CODE!!!!!!!\n";
 			++v;
 		}
        // cout<<"end of first iteration in FindCount"<<endl;
