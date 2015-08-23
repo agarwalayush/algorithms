@@ -41,7 +41,7 @@ node * BST_search(node * root, double key){
 	while(ptr!=NULL){
 		if(ptr->x == key)	return ptr;
 		else if(ptr->x >= key)	ptr = ptr->left; 
-		else return ptr = ptr->right;
+		else  ptr = ptr->right;
 	}
 	return NULL;
 }
@@ -300,7 +300,9 @@ long long int FindCount(){
 					root = BST_delete(root,key);
 				}
 			}
-			else cout<<"ERROR IN CODE!!!!!!!\n";
+			else {
+                cout<<key<<" ERROR IN CODE!!!!!!!\n";
+            }
 			++v;
 		}
        // cout<<"end of first iteration in FindCount"<<endl;
