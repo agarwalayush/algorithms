@@ -3,6 +3,12 @@
 #include<cstdlib>
 using namespace std;
 
+#define DEBUG_MAIN 0
+#define DEBUG_INSERT 0
+#define DEBUG_DELETE 1
+#define DEBUG_COUNT 1
+#define DEBUG_FINDCOUNT 1
+
 vector<pair<pair<double,double>,double> > blue;
 vector<pair<double,double> > yellow;  // Contains the start point of all vertical red lines
 vector<pair<double,double> > violet;  // Contains the end point of all vertical red lines
@@ -26,21 +32,21 @@ bool blueFunction (pair< pair<double,double>,double> i, pair< pair<double,double
 bool redFunction (pair<double,double> i, pair<double,double> j) { return i.first < j.first; }
 
 node * BST_insert(node * root, double key){
-	//cout<<"welcome to insert function\n";
+	if(DEBUG_INSERT)	cout<<"welcome to insert function\n";
 	node *pt = new node;
         pt->x = key;
         pt->left = pt->parent = pt->right = NULL;
         pt->subtree_size = 1;
 	if(root == NULL){
-		//cout<<"First entry\n";
+		if(DEBUG_INSERT)	cout<<"First entry\n";
 		root = pt;
-		//cout<<"Assignment done\n";
+		if(DEBUG_INSERT)	cout<<"Assignment done\n";
 		return root;
 	}
 	root->subtree_size ++;
 	if(key <= root->x){
 		if(root->left == NULL){
-			//cout<<"Insert left\n";
+			if(DEBUG_INSERT)	cout<<"Insert left\n";
 			pt->parent = root;
 			root->left = pt;
 		}
@@ -48,7 +54,7 @@ node * BST_insert(node * root, double key){
 	}
 	else{
 		if(root->right == NULL){
-			//cout<<"Insert right\n";
+			if(DEBUG_INSERT)	cout<<"Insert right\n";
 			pt->parent = root;
                         root->right = pt;
                 }
@@ -58,61 +64,84 @@ node * BST_insert(node * root, double key){
 }
 
 node * BST_delete(node * root, double key){
-	//cout<<"Welcome to delete function\n";
+	if(DEBUG_DELETE)	cout<<"Welcome to delete function\n";
 	if(root == NULL) return NULL;
 	root->subtree_size --;
 	if(key == root->x){
+		if(DEBUG_DELETE) cout<<"Inside the base case of delete\n";
 		if(root->left == NULL){
-			if(root->parent == NULL) ;
-			else if(root->parent->left == root)	root->parent->left = root->right;
-			else	root->parent->right = root->right;
-			delete(root);
-			root = NULL;
+			node *ptr = root;
+			if(ptr->parent == NULL) root = ptr->right;
+			else if(ptr->parent->left == ptr){
+				root = ptr->right;
+				ptr->parent->left = ptr->right;
+			}
+			else{
+				root = ptr->right;
+				ptr->parent->right = ptr->right;
+			}
+			delete(ptr);
+			ptr = NULL;
 		}
 		else if(root->right == NULL){
-			if(root->parent == NULL) ;
-			else if(root->parent->left = root)   root->parent->left = root->left;
-                        else    root->parent->right = root->left;
-			delete(root);
-			root = NULL;
+			node *ptr = root;
+			if(ptr->parent == NULL) root = ptr->left;
+			else if(ptr->parent->left = ptr){
+				root = ptr->left;
+				ptr->parent->left = ptr->left;
+			}
+                        else{
+				root = ptr->left;
+				ptr->parent->right = ptr->left;
+			}
+			delete(ptr);
+			ptr = NULL;
                 }	
 		else{
 			node * ptr = root->left;
-			while(ptr!= NULL){
-				ptr->subtree_size --;
-				ptr = ptr->right;
-			}		
-			root->x = ptr->x;
-			ptr->parent->right = ptr->left;
+			if(ptr->right==NULL){
+				root->x = ptr->x;
+				root->left = ptr->left;
+			}
+			else{	
+				while(ptr->right!= NULL){
+					ptr->subtree_size --;
+					ptr = ptr->right;
+				}		
+				root->x = ptr->x;
+				ptr->parent->right = ptr->left;
+			}
 			delete(ptr);
 			ptr = NULL;
 		}	
 	}
 	else if(key < root->x) BST_delete(root->left, key);
         else BST_delete(root->right, key);
+	if(DEBUG_DELETE)        cout<<"Closing delete\n";
 	return root;
 }
 
 long long int BST_count(node * root, double x1, double x2){
-	//cout<<"Welcome to BST_count\n";
+	if(DEBUG_COUNT)	cout<<"Welcome to BST_count\n";
 	long long int count = 0;
 	if(root == NULL)	return 0;
 	map<node *,bool> m;
 	node * ptr_x1 = root;
-	//cout<<"Before while 1\n";
+	if(DEBUG_COUNT)	cout<<"Before while 1\n";
 	while(ptr_x1 != NULL){
+		m[ptr_x1] = 1;
 		if(ptr_x1->x == x1) break;
 		else if(ptr_x1->x > x1){
-			m[ptr_x1] = 1;
 			ptr_x1 = ptr_x1->left;
 		}
 		else{
 			ptr_x1 = ptr_x1->right;
 		}	
 	}
+	m[NULL] = 0;
 	node * LCA = NULL;
 	node * ptr_x2 = root;
-	//cout<<"Before while 2\n";
+	if(DEBUG_COUNT)	cout<<"Before while 2\n";
 	while(ptr_x2 != NULL){
 		if(ptr_x2->x == x2) break;
 		if(m[ptr_x2]==1) LCA = ptr_x2;
@@ -123,13 +152,9 @@ long long int BST_count(node * root, double x1, double x2){
                         ptr_x2 = ptr_x2->left;
                 }
         }
-	//cout<<"After while 2\n";
+	if(DEBUG_COUNT && LCA == NULL) cout<<"LCA is NULL \n";
+	if(DEBUG_COUNT)	cout<<"After while 2\n";
 	node * ptr = LCA;
-	if(ptr == root){
-		count = count + 1 + BST_count(root->left, x1, 2.0) + BST_count(root->right, x2, -1.0);
-		return count;
-	}
-	//cout<<"LCA is not root\n";
 	while(ptr!=NULL){
                 if(ptr->x == x1){ 
                         count = (ptr->right == NULL)? count +1 : count + ptr->right->subtree_size +1;
@@ -143,7 +168,8 @@ long long int BST_count(node * root, double x1, double x2){
 			ptr = ptr->left;
                 }
         }
-	//cout<<"After while 3\n";
+	if(DEBUG_COUNT && LCA == NULL) cout<<"LCA is NULL \n";
+	if(DEBUG_COUNT)	cout<<"After while 3\n";
 	ptr = LCA;
 	while(ptr!=NULL){
 		if(ptr->x == x2){
@@ -158,8 +184,9 @@ long long int BST_count(node * root, double x1, double x2){
 			ptr = ptr->right;
 		} 
 	}
-	//cout<<"After while 4\n";
-	count --; // As LCA would have been included twice
+	if(DEBUG_COUNT)	cout<<"After while 4\n";
+	if(LCA->x >= x1 && LCA->x <= x2) count --; // As LCA would have got included twice in this case
+	if(DEBUG_COUNT) cout<<"Exit BST_count\n";
 	return count;
 }
 
@@ -168,20 +195,20 @@ long long int FindCount(){
 	vector<pair<double,double> >::iterator y=yellow.begin();
 	vector<pair<double,double> >::iterator v=violet.begin();
 	long long int count = 0;
-	while(b!=blue.end()){
+	while(b!=blue.end()&& v!=violet.end()){
 		if(y!=yellow.end() && (*b).second >= (*y).first){
-			//cout<<"before insert\n";
+			if(DEBUG_FINDCOUNT)	cout<<"before insert\n";
 			root = BST_insert(root,(*y).second);
 			++y;
 		}
 		while(((*b).second>(*v).first)&&(v!=violet.end())){
-			//cout<<"before delete\n";
+			if(DEBUG_FINDCOUNT)	cout<<"before delete\n";
 			root = BST_delete(root,(*v).second);
 			++v;
 		}
 		count = count + BST_count(root,(*b).first.first, (*b).first.second);
 		++b;
-		//cout<<"The big while last step\n";
+		if(DEBUG_FINDCOUNT)	cout<<"The big while last step\n";
 	}	
 	return count;
 }
@@ -196,8 +223,9 @@ int main(){
 	pair<double,double> A2;
 	pair<double,double> A3;
 	scanf("%lld",&n);
-	long long int test_cases = 1 ;//100000000/n;
+	long long int test_cases = 100000000/n;
 	while(test_cases --){
+			blue.clear(); yellow.clear(); violet.clear();
 			root = NULL;
 // Blue lines input is taken first, in the format x1 x2 y\n
 		for(int i=0; i<n; i++){
@@ -205,7 +233,7 @@ int main(){
 			A1.first.first = ((double) rand()*(A1.first.second-min)/(double)RAND_MAX-min);
 			A1.second = ((double) rand()*(max-min)/(double)RAND_MAX-min);
 			blue.push_back(A1);
-			//printf("%lf %lf %lf\n",A1.first.first, A1.first.second, A1.second);
+			if(DEBUG_MAIN)	printf("%lf %lf %lf\n",A1.first.first, A1.first.second, A1.second);
 		}
 // Red lines input is taken second, in the format y1 y2 x\n
 		for(int i=0; i<n; i++){
@@ -215,14 +243,14 @@ int main(){
 			A2.second = A3.second;
 			yellow.push_back(A2);
 			violet.push_back(A3);
-			//printf("%lf %lf %lf %lf\n",A2.first, A2.second,A3.first,A3.second);
+			if(DEBUG_MAIN)	printf("%lf %lf %lf %lf\n",A2.first, A2.second,A3.first,A3.second);
         	}
 // Sort all the three vectors based on their Y-coordinates
 		sort (blue.begin(), blue.end(), blueFunction);
 		sort (yellow.begin(), yellow.end(), redFunction);
 		sort (violet.begin(), violet.end(), redFunction);
 		count = FindCount();
-		printf("%lld\n", count);
+		if(DEBUG_MAIN)	printf("%lld\n", count);
 		ans = ans + count;
 	}
 	printf("Averaged number of intersections for n = %lld is %lf\n",n,ans/n);
