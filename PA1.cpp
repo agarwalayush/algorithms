@@ -33,11 +33,13 @@ bool redFunction (pair<double,double> i, pair<double,double> j) { return i.first
 
 node * BST_insert(node * root, double key){
 	if(DEBUG_INSERT)	cout<<"welcome to insert function\n";
-	node *pt = new node;
-        pt->x = key;
-        pt->left = pt->parent = pt->right = NULL;
-        pt->subtree_size = 1;
 	if(root == NULL){
+		 node *pt = new node;
+        	 pt->x = key;
+        	 pt->left = NULL;
+        	 pt->parent = NULL;
+        	 pt->right = NULL;
+        	 pt->subtree_size = 1;
 		if(DEBUG_INSERT)	cout<<"First entry\n";
 		root = pt;
 		if(DEBUG_INSERT)	cout<<"Assignment done\n";
@@ -46,6 +48,12 @@ node * BST_insert(node * root, double key){
 	root->subtree_size ++;
 	if(key <= root->x){
 		if(root->left == NULL){
+			node *pt = new node;
+        		pt->x = key;
+        		pt->left = NULL;
+        		pt->parent = NULL;
+        		pt->right = NULL;
+        		pt->subtree_size = 1;
 			if(DEBUG_INSERT)	cout<<"Insert left\n";
 			pt->parent = root;
 			root->left = pt;
@@ -54,6 +62,12 @@ node * BST_insert(node * root, double key){
 	}
 	else{
 		if(root->right == NULL){
+			 node *pt = new node;
+        		 pt->x = key;
+        		 pt->left = NULL;
+        		 pt->parent = NULL;
+       			 pt->right = NULL;
+        		 pt->subtree_size = 1;
 			if(DEBUG_INSERT)	cout<<"Insert right\n";
 			pt->parent = root;
                         root->right = pt;
