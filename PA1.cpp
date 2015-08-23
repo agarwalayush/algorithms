@@ -87,36 +87,44 @@ void BST_delete(node * root, double key){
         else BST_delete(root->right, key);
 }
 
-long long int BST_count(node * root, int x1, int x2){
+long long int BST_count(node * root, double x1, double x2){
 	long long int count = 0;
-	if(root == NULL) return 0;
-	if(root->x > x2) BST_count(root->left, x1, x2);
-	else if(root->x < x1) BST_count(root->right, x1, x2);
-	else{
-		node * ptr = root;
-		count = count + 1;
-		while(ptr->x != x1){
-			if(ptr->x < x1){
-				ptr = ptr->right;
-			}
-			else{
-				count = count + ptr->subtree_size;
-				ptr = ptr->left;
-			}
+	if(root == NULL)	return 0;
+	map<node *,bool> m;
+	node * ptr_x1 = root;
+	while(ptr_x1 != NULL){
+		if(ptr_x1->x == x1) break;
+		else if(ptr_x1->x > x1){
+			m[ptr_x1] = 1;
+			ptr_x1 = ptr_x1->left;
 		}
-		if(ptr != root) count = count + 1 + ptr->right->subtree_size;
-		ptr = root;
-		while(ptr->x != x2){
-                        if(ptr->x <= x2){
-                                ptr = ptr->right;
-                        }
-                        else{
-                                count = count + ptr->subtree_size;
-                                ptr = ptr->left;
-                        }
-                }
-		if(ptr != root) count = count + 1 + ptr->left->subtree_size;
+		else{
+			ptr_x1 = ptr_x1->right;
+		}	
 	}
+	node * LCA = NULL;
+	node * ptr_x2 = root;
+	while(ptr_x2 != NULL){
+		if(ptr_x2->x == x2) break;
+		if(m[ptr_x2]==1) LCA = ptr_x2;
+                if(ptr_x2->x < x2){
+                        ptr_x2 = ptr_x2->right;
+                }
+                else{
+                        ptr_x2 = ptr_x2->left;
+                }
+        }
+	if(ptr_x1 !=NULL && ptr_x1->right != NULL) count = count + ptr_x1->right->subtree_size;
+	while(ptr_x1->parent != LCA && ptr_x1->parent != NULL){
+		count++;
+		if(ptr_x1->parent->left = ptr_x1)	count = count + ptr_x1->parent->right->subtree_size;
+	}
+	count ++; // To include LCA
+	if(ptr_x2 != NULL && ptr_x2->left !=NULL) count = count + ptr_x2->left->subtree_size;
+	while(ptr_x2->parent != LCA && ptr_x2->parent != NULL){
+                count++;
+                if(ptr_x2->parent->right = ptr_x2)       count = count + ptr_x2->parent->left->subtree_size;
+        }
 	return count;
 }
 
