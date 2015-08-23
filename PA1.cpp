@@ -246,6 +246,21 @@ long long int FindCount(){
 }
 
 int main(){
+    node *root = new node();
+    root->x =10;
+    node *left = new node();
+    left->x =5;
+    node *right = new node();
+    right->x= 15;
+    root->left=left;
+    root->right=right;
+    left->parent=root;
+    right->parent=root;
+    left->left=right->left=left->right=right->right=NULL;
+    BST_delete(root, 15);
+}
+
+int main_test(){
 	srand (static_cast <unsigned> (time(0)));
 	long long int n,count;
 	double ans = 0.0;
