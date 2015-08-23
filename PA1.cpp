@@ -34,12 +34,12 @@ bool redFunction (pair<double,double> i, pair<double,double> j) { return i.first
 node * BST_insert(node * root, double key){
 	if(DEBUG_INSERT)	cout<<"welcome to insert function\n";
 	if(root == NULL){
-		 node *pt = new node;
-        	 pt->x = key;
-        	 pt->left = NULL;
-        	 pt->parent = NULL;
-        	 pt->right = NULL;
-        	 pt->subtree_size = 1;
+		node *pt = new node;
+        	pt->x = key;
+        	pt->left = NULL;
+        	pt->parent = NULL;
+        	pt->right = NULL;
+        	pt->subtree_size = 1;
 		if(DEBUG_INSERT)	cout<<"First entry\n";
 		root = pt;
 		if(DEBUG_INSERT)	cout<<"Assignment done\n";
@@ -62,12 +62,12 @@ node * BST_insert(node * root, double key){
 	}
 	else{
 		if(root->right == NULL){
-			 node *pt = new node;
-        		 pt->x = key;
-        		 pt->left = NULL;
-        		 pt->parent = NULL;
-       			 pt->right = NULL;
-        		 pt->subtree_size = 1;
+			node *pt = new node;
+        		pt->x = key;
+        		pt->left = NULL;
+        		pt->parent = NULL;
+       			pt->right = NULL;
+        		pt->subtree_size = 1;
 			if(DEBUG_INSERT)	cout<<"Insert right\n";
 			pt->parent = root;
                         root->right = pt;
@@ -89,10 +89,12 @@ node * BST_delete(node * root, double key){
 			else if(ptr->parent->left == ptr){
 				root = ptr->right;
 				ptr->parent->left = ptr->right;
+				ptr->right->parent = ptr->parent;
 			}
 			else{
 				root = ptr->right;
 				ptr->parent->right = ptr->right;
+				ptr->right->parent = ptr->parent;
 			}
 			delete(ptr);
 			ptr = NULL;
@@ -103,10 +105,12 @@ node * BST_delete(node * root, double key){
 			else if(ptr->parent->left = ptr){
 				root = ptr->left;
 				ptr->parent->left = ptr->left;
+				ptr->left->parent = ptr->parent;
 			}
                         else{
 				root = ptr->left;
 				ptr->parent->right = ptr->left;
+				ptr->left->parent = ptr->left;
 			}
 			delete(ptr);
 			ptr = NULL;
@@ -116,6 +120,7 @@ node * BST_delete(node * root, double key){
 			if(ptr->right==NULL){
 				root->x = ptr->x;
 				root->left = ptr->left;
+				root->left->parent = root;
 			}
 			else{	
 				while(ptr->right!= NULL){
@@ -124,6 +129,7 @@ node * BST_delete(node * root, double key){
 				}		
 				root->x = ptr->x;
 				ptr->parent->right = ptr->left;
+				ptr->left->parent = ptr->parent;
 			}
 			delete(ptr);
 			ptr = NULL;
