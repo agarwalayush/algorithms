@@ -25,22 +25,26 @@ class node{
 bool blueFunction (pair< pair<double,double>,double> i, pair< pair<double,double>,double> j) { return i.second < j.second; }
 bool redFunction (pair<double,double> i, pair<double,double> j) { return i.first < j.first; }
 
-void BST_insert(node * root, node * pt){
+void BST_insert(node * root, double key){
 	//cout<<"welcome to insert function\n";
+	node *pt = new node;
+        pt->x = key;
+        pt->left = pt->parent = pt->right = NULL;
+        pt->subtree_size = 1;
 	if(root == NULL){
 		//cout<<"First entry\n";
 		root = pt;
-		root->subtree_size = 1;
+		//cout<<"Assignment done\n";
 		return;
 	}
 	root->subtree_size ++;
-	if(pt->x <= root->x){
+	if(key <= root->x){
 		if(root->left == NULL){
 			//cout<<"Insert left\n";
 			pt->parent = root;
 			root->left = pt;
 		}
-		else BST_insert(root->left, pt);
+		else BST_insert(root->left, key);
 	}
 	else{
 		if(root->right == NULL){
@@ -48,7 +52,7 @@ void BST_insert(node * root, node * pt){
 			pt->parent = root;
                         root->right = pt;
                 }
-                else BST_insert(root->right, pt);
+                else BST_insert(root->right, key);
 	}
 }
 
@@ -88,10 +92,12 @@ void BST_delete(node * root, double key){
 }
 
 long long int BST_count(node * root, double x1, double x2){
+	//cout<<"Welcome to BST_count\n";
 	long long int count = 0;
 	if(root == NULL)	return 0;
 	map<node *,bool> m;
 	node * ptr_x1 = root;
+	//cout<<"Before while 1\n";
 	while(ptr_x1 != NULL){
 		if(ptr_x1->x == x1) break;
 		else if(ptr_x1->x > x1){
@@ -104,6 +110,7 @@ long long int BST_count(node * root, double x1, double x2){
 	}
 	node * LCA = NULL;
 	node * ptr_x2 = root;
+	//cout<<"Before while 2\n";
 	while(ptr_x2 != NULL){
 		if(ptr_x2->x == x2) break;
 		if(m[ptr_x2]==1) LCA = ptr_x2;
@@ -114,13 +121,17 @@ long long int BST_count(node * root, double x1, double x2){
                         ptr_x2 = ptr_x2->left;
                 }
         }
+	//cout<<"After while 2\n";
 	if(ptr_x1 !=NULL && ptr_x1->right != NULL) count = count + ptr_x1->right->subtree_size;
+	cout<<"Before while 3\n";
 	while(ptr_x1->parent != LCA && ptr_x1->parent != NULL){
 		count++;
 		if(ptr_x1->parent->left = ptr_x1)	count = count + ptr_x1->parent->right->subtree_size;
 	}
-	count ++; // To include LCA
+	//count ++; // To include LCA
+	cout<<"After while 3\n";
 	if(ptr_x2 != NULL && ptr_x2->left !=NULL) count = count + ptr_x2->left->subtree_size;
+	//cout<<"Before while 4\n";
 	while(ptr_x2->parent != LCA && ptr_x2->parent != NULL){
                 count++;
                 if(ptr_x2->parent->right = ptr_x2)       count = count + ptr_x2->parent->left->subtree_size;
@@ -133,29 +144,24 @@ long long int FindCount(){
 	vector<pair<double,double> >::iterator y=yellow.begin();
 	vector<pair<double,double> >::iterator v=violet.begin();
 	long long int count = 0;
-	while((b!=blue.end())&&(v!=violet.end())){
-		if(y!=yellow.end()){
+	while(b!=blue.end()){
+		if(y!=yellow.end() && (*b).second > (*y).first){
 			node *pt = new node;
 			pt->x = (*y).second;
 			pt->left = pt->parent = pt->right = NULL;
 			pt->subtree_size = 0;
 			//cout<<"before insert\n";
-			BST_insert(root,pt);
+			BST_insert(root,(*y).second);
 			++y;
-		}
-		while(((*b).second<(*y).first)&&(b!=blue.end())){
-			++b;
-		}
-		while(((*b).second <= (*(y+1)).first)&&(b!=blue.end())){
-			//cout<<"before count\n";
-			count = count + BST_count(root,(*b).first.first, (*b).first.second);
-			++b;
 		}
 		while(((*b).second>(*v).first)&&(v!=violet.end())){
 			//cout<<"before delete\n";
 			BST_delete(root,(*v).second);
 			++v;
 		}
+		count = count + BST_count(root,(*b).first.first, (*b).first.second);
+		++b;
+		//cout<<"The big while last step\n";
 	}	
 	return count;
 }
