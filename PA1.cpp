@@ -287,6 +287,7 @@ int main(){
     root = NULL;
     while(i<n){
         A[i]=rand();
+        cout<<A[i]<<endl;
 		root = BST_insert(root,A[i]);
 		i++;
     }
