@@ -5,10 +5,10 @@ using namespace std;
 
 #define tr(c,i) for(typeof(c.begin()) i = (c).begin(); i != (c).end(); i++)
 #define DEBUG_MAIN 0
-#define DEBUG_INSERT 1
-#define DEBUG_DELETE 1
-#define DEBUG_COUNT 1
-#define DEBUG_FINDCOUNT 1
+#define DEBUG_INSERT 0
+#define DEBUG_DELETE 0
+#define DEBUG_COUNT 0
+#define DEBUG_FINDCOUNT 0
 
 vector<pair<pair<double,double>,double> > blue;
 vector<pair<double,double> > yellow;  // Contains the start point of all vertical red lines
@@ -104,7 +104,7 @@ node * BST_delete(node * root, double key){
 				ptr->parent->right = ptr->right;
 				if(ptr->right != NULL)	ptr->right->parent = ptr->parent;
 			}
-			delete(ptr);
+			//delete(ptr);
 			ptr = NULL;
 		}
 		else if(root->right == NULL){
@@ -124,7 +124,7 @@ node * BST_delete(node * root, double key){
 				ptr->parent->right = ptr->left;
 				if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
 			}
-			delete(ptr);
+			//delete(ptr);
 			ptr = NULL;
                 }	
 		else{
@@ -147,7 +147,7 @@ node * BST_delete(node * root, double key){
 				if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
 			}
 			if(DEBUG_DELETE) cout<<"Ending Else\n";
-			delete(ptr);
+			//delete(ptr);
 			ptr = NULL;
 		}	
 	}
@@ -197,7 +197,7 @@ long long int BST_count(node * root, double x1, double x2){
 	if(DEBUG_COUNT && LCA == NULL) cout<<"LCA is NULL \n";
 	if(DEBUG_COUNT)	cout<<"After while 2\n";
 	node * ptr = LCA;
-    cout<< ptr->x <<endl;
+    //cout<< ptr->x <<endl;
     if(LCA->x >= x1 && LCA->x <= x2)
     {
         count++;
@@ -254,7 +254,7 @@ long long int FindCount(){
 			root = BST_delete(root,(*v).second);
 			++v;
 		}
-        cout<<"end of first iteration in FindCount"<<endl;
+       // cout<<"end of first iteration in FindCount"<<endl;
 		count = count + BST_count(root,(*b).first.first, (*b).first.second);
 		++b;
 		if(DEBUG_FINDCOUNT)	cout<<"The big while last step\n";
@@ -278,7 +278,7 @@ int main_test(){
     BST_delete(root, 15);
 }
 
-int main(){
+int main_tst(){
     //int A[] = {10,5,15,2,7,12,17,1,3,6,100,-500,460,123,-46,13,8};
     
     int i = 0,n;
@@ -298,7 +298,7 @@ int main(){
     }
 }
 
-int main1(){
+int main(){
 	srand (static_cast <unsigned> (time(0)));
 	long long int n,count;
 	double ans = 0.0;
@@ -308,7 +308,7 @@ int main1(){
 	pair<double,double> A2;
 	pair<double,double> A3;
 	scanf("%lld",&n);
-	long long int test_cases = 1; //00000000/n;
+	long long int test_cases = 1000000/n; //00000000/n;
 	long long int r =0;
 	while(r<test_cases){
 			blue.clear(); yellow.clear(); violet.clear();
@@ -336,15 +336,16 @@ int main1(){
         sort (blue.begin(), blue.end(), blueFunction);
 		sort (yellow.begin(), yellow.end(), redFunction);
 		sort (violet.begin(), violet.end(), redFunction);
-
-        tr(blue,i){
-            cout<<"blue"<<" "<< (*i).first.first <<" "<< (*i).first.second<<" "<<(*i).second<<endl;
-        }
-        tr(yellow,i){
-            cout<<"yellow"<<" "<< (*i).first <<" "<< (*i).second<<endl;
-        }
-        tr(violet,i){
-            cout<<"violet"<<" "<< (*i).first <<" "<< (*i).second<<endl;
+        if(DEBUG_MAIN){
+            tr(blue,i){
+                ;//cout<<"blue"<<" "<< (*i).first.first <<" "<< (*i).first.second<<" "<<(*i).second<<endl;
+            }
+            tr(yellow,i){
+                ;//cout<<"yellow"<<" "<< (*i).first <<" "<< (*i).second<<endl;
+            }
+            tr(violet,i){
+                ;//cout<<"violet"<<" "<< (*i).first <<" "<< (*i).second<<endl;
+            }
         }
 		count = FindCount();
 		if(DEBUG_MAIN)	printf("%lld\n", count);
