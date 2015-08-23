@@ -60,20 +60,6 @@ node * BST_insert(node * root, double key){
 		if(DEBUG_INSERT)	cout<<"Assignment done\n";
 		return root;
 	}
-	node * exists = BST_search(root,key);
-	if(exists != NULL){
-		node * p = root;
-		while(p!=NULL){
-			p->subtree_size++;
-			if(p->x == key){
-				p->count++;
-				break;
-			}
-			else if(p->x >= key) p = p->left;
-			else	p = p->right;
-		}
-		return root;
-	}
 	root->subtree_size ++;
 	if(key <= root->x){
 		if(root->left == NULL){
@@ -290,7 +276,23 @@ long long int FindCount(){
 	while(b!=blue.end()&& v!=violet.end()){
 		while(y!=yellow.end() && (*b).second >= (*y).first){
 			if(DEBUG_FINDCOUNT)	cout<<"before insert\n";
-			root = BST_insert(root,(*y).second);
+			double key = (*y).second;
+			node * exists = BST_search(root,key);
+			if(exists != NULL){
+				node * p = root;
+				while(p!=NULL){
+					p->subtree_size++;
+					if(p->x == key){
+						p->count++;
+						break;
+					}
+					else if(p->x >= key) p = p->left;
+					else	p = p->right;
+				}	
+			}
+			else{
+				root = BST_insert(root,key);
+			}
 			++y;
 		}
 		while(((*b).second>(*v).first)&&(v!=violet.end())){
