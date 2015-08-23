@@ -90,12 +90,12 @@ node * BST_delete(node * root, double key){
 			else if(ptr->parent->left == ptr){
 				root = ptr->right;
 				ptr->parent->left = ptr->right;
-				ptr->right->parent = ptr->parent;
+				if(ptr->right != NULL)	ptr->right->parent = ptr->parent;
 			}
 			else{
 				root = ptr->right;
 				ptr->parent->right = ptr->right;
-				ptr->right->parent = ptr->parent;
+				if(ptr->right != NULL)	ptr->right->parent = ptr->parent;
 			}
 			delete(ptr);
 			ptr = NULL;
@@ -107,12 +107,12 @@ node * BST_delete(node * root, double key){
 			else if(ptr->parent->left = ptr){
 				root = ptr->left;
 				ptr->parent->left = ptr->left;
-				ptr->left->parent = ptr->parent;
+				if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
 			}
                         else{
 				root = ptr->left;
 				ptr->parent->right = ptr->left;
-				ptr->left->parent = ptr->parent;
+				if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
 			}
 			delete(ptr);
 			ptr = NULL;
@@ -124,7 +124,7 @@ node * BST_delete(node * root, double key){
 				if(DEBUG_DELETE) cout<<"inside If\n";
 				root->x = ptr->x;
 				root->left = ptr->left;
-				root->left->parent = root;
+				if(root->left != NULL)	root->left->parent = root;
 			}
 			else{	
 				if(DEBUG_DELETE) cout<<"inside Else\n";
@@ -134,7 +134,7 @@ node * BST_delete(node * root, double key){
 				}		
 				root->x = ptr->x;
 				ptr->parent->right = ptr->left;
-				ptr->left->parent = ptr->parent;
+				if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
 			}
 			if(DEBUG_DELETE) cout<<"Ending Else\n";
 			delete(ptr);
@@ -246,11 +246,11 @@ long long int FindCount(){
 }
 
 int main(){
-    node *root = new node();
+    node *root = new node;
     root->x =10;
-    node *left = new node();
+    node *left = new node;
     left->x =5;
-    node *right = new node();
+    node *right = new node;
     right->x= 15;
     root->left=left;
     root->right=right;
