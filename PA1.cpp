@@ -129,12 +129,15 @@ long long int BST_count(node * root, double x1, double x2){
 	node * ptr_x1 = root;
 	if(DEBUG_COUNT)	cout<<"Before while 1\n";
 	while(ptr_x1 != NULL){
+		if(DEBUG_COUNT)	cout<<"in x1 locating loop of count\n";
 		m[ptr_x1] = 1;
 		if(ptr_x1->x == x1) break;
 		else if(ptr_x1->x > x1){
+			if(DEBUG_COUNT) cout<<"WHAT THE HELL! \n";
 			ptr_x1 = ptr_x1->left;
 		}
 		else{
+			if(DEBUG_COUNT) cout<<"I WILL HAVE TO JUNK THIS DUMB CODE\n";
 			ptr_x1 = ptr_x1->right;
 		}	
 	}
@@ -143,12 +146,15 @@ long long int BST_count(node * root, double x1, double x2){
 	node * ptr_x2 = root;
 	if(DEBUG_COUNT)	cout<<"Before while 2\n";
 	while(ptr_x2 != NULL){
+		if(DEBUG_COUNT) cout<<"in x1 locating loop of count\n";
 		if(ptr_x2->x == x2) break;
 		if(m[ptr_x2]==1) LCA = ptr_x2;
                 if(ptr_x2->x < x2){
+			if(DEBUG_COUNT) cout<<"WHAT THE HELL!\n";
                         ptr_x2 = ptr_x2->right;
                 }
                 else{
+			if(DEBUG_COUNT) cout<<"I WILL HAVE TO JUNK THIS CODE\n";
                         ptr_x2 = ptr_x2->left;
                 }
         }
@@ -223,8 +229,9 @@ int main(){
 	pair<double,double> A2;
 	pair<double,double> A3;
 	scanf("%lld",&n);
-	long long int test_cases = 100000000/n;
-	while(test_cases --){
+	long long int test_cases = 1; //00000000/n;
+	long long int r =0;
+	while(r<test_cases){
 			blue.clear(); yellow.clear(); violet.clear();
 			root = NULL;
 // Blue lines input is taken first, in the format x1 x2 y\n
@@ -252,7 +259,8 @@ int main(){
 		count = FindCount();
 		if(DEBUG_MAIN)	printf("%lld\n", count);
 		ans = ans + count;
+		r++;
 	}
-	printf("Averaged number of intersections for n = %lld is %lf\n",n,ans/n);
+	printf("Averaged number of intersections for n = %lld is %lf\n",n, ans/test_cases);
 	return 0;
 }
