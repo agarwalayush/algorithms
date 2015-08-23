@@ -279,7 +279,7 @@ int main_test(){
 }
 
 int main(){
-	//srand (static_cast <unsigned> (time(0)));
+	srand (static_cast <unsigned> (time(0)));
 	long long int n,count;
 	double ans = 0.0;
 	double max = 1.0;
@@ -334,3 +334,4 @@ int main(){
 	printf("Averaged number of intersections for n = %lld is %lf\n",n, ans/test_cases);
 	return 0;
 }
+
