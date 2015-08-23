@@ -9,7 +9,7 @@ using namespace std;
 #define DEBUG_SEARCH 0
 #define DEBUG_DELETE 0
 #define DEBUG_COUNT 0
-#define DEBUG_FINDCOUNT 0
+#define DEBUG_FINDCOUNT 1
 
 vector<pair<pair<double,double>,double> > blue;
 vector<pair<double,double> > yellow;  // Contains the start point of all vertical red lines
@@ -357,7 +357,7 @@ int main(){
 	pair<double,double> A2;
 	pair<double,double> A3;
 	scanf("%lld",&n);
-	long long int test_cases = 1000000/n;
+	long long int test_cases = 1; // 1000000/n;
 	long long int r =0;
 	while(r<test_cases){
 			blue.clear(); yellow.clear(); violet.clear();
