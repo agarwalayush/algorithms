@@ -245,7 +245,7 @@ long long int FindCount(){
 	return count;
 }
 
-int main(){
+void del_test(){
     node *root = new node;
     root->x =10;
     node *left = new node;
@@ -260,7 +260,7 @@ int main(){
     BST_delete(root, 15);
 }
 
-int main_test(){
+int main(){
 	srand (static_cast <unsigned> (time(0)));
 	long long int n,count;
 	double ans = 0.0;
