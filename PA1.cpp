@@ -4,12 +4,12 @@
 using namespace std;
 
 #define tr(c,i) for(typeof(c.begin()) i = (c).begin(); i != (c).end(); i++)
-#define DEBUG_MAIN 1
+#define DEBUG_MAIN 0
 #define DEBUG_INSERT 0
-#define DEBUG_SEARCH 0
-#define DEBUG_DELETE 1
+#define DEBUG_SEARCH 0 
+#define DEBUG_DELETE 0
 #define DEBUG_COUNT 0
-#define DEBUG_FINDCOUNT 1
+#define DEBUG_FINDCOUNT 0
 
 vector<pair<pair<double,double>,double> > blue;
 vector<pair<double,double> > yellow;  // Contains the start point of all vertical red lines
@@ -47,7 +47,7 @@ node * BST_search(node * root, double key){
 }
 
 node * BST_insert(node * root, double key){
-	cout<<"key inserted : "<<key<<endl;
+	if(DEBUG_INSERT)	cout<<"key inserted : "<<key<<endl;
 	if(DEBUG_INSERT)	cout<<"welcome to insert function\n";
 	if(root == NULL){
 		node *pt = new node;
@@ -95,11 +95,10 @@ node * BST_insert(node * root, double key){
 }
 
 node * BST_delete(node * root, double key){
-	if(DEBUG_DELETE)	cout<<"Welcome to delete function\n";
+	if(DEBUG_DELETE) cout<<"Key to be deleted : "<<key<<"\n";
 	if(root == NULL) return NULL;
 	root->subtree_size --;
 	if(key == root->x){
-		if(DEBUG_DELETE) cout<<"Inside the base case of delete\n";
 		if(root->left == NULL){
 			if(DEBUG_DELETE) cout<<"Inside left\n";
 			node *ptr = root;
@@ -120,7 +119,8 @@ node * BST_delete(node * root, double key){
 				ptr->parent->right = ptr->right;
 				if(ptr->right != NULL)	ptr->right->parent = ptr->parent;
 			}
-			cout<<"Key deleted : "<<ptr->x<<endl;
+			double new_value = (root != NULL)?root->x : -1.0;
+			if(DEBUG_DELETE) cout<<"Key replaced with : "<<new_value<<"	Key deleted : "<<ptr->x<<"\n";
 			free(ptr);
 			ptr = NULL;
 		}
@@ -128,10 +128,11 @@ node * BST_delete(node * root, double key){
 			if(DEBUG_DELETE) cout<<"Inside right\n";
 			node *ptr = root;
 			if(ptr->parent == NULL){
+				if(DEBUG_DELETE) 	cout<<"1\n";
 				root = ptr->left;
-				root->parent = NULL;
+				if(root != NULL)	root->parent = NULL;
 			}
-			else if(ptr->parent->left = ptr){
+			else if(ptr->parent->left == ptr){
 				root = ptr->left;
 				ptr->parent->left = ptr->left;
 				if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
@@ -141,7 +142,8 @@ node * BST_delete(node * root, double key){
 				ptr->parent->right = ptr->left;
 				if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
 			}
-			cout<<"Key deleted : "<<ptr->x<<endl;
+			double new_value = (root != NULL)?root->x : -1.0;
+                        if(DEBUG_DELETE) cout<<"Key replaced with : "<<new_value<<"	Key deleted : "<<ptr->x<<"\n";
 			free(ptr);
 			ptr = NULL;
                 }		
@@ -149,7 +151,7 @@ node * BST_delete(node * root, double key){
 			if(DEBUG_DELETE) cout<<"inside Else\n";
 			node * ptr = root->left;
 			if(ptr->right==NULL){
-				if(DEBUG_DELETE) cout<<"inside If\n";
+				if(DEBUG_DELETE)	cout<<"Inside If\n";
 				root->x = ptr->x;
 				root->left = ptr->left;
 				if(root->left != NULL)	root->left->parent = root;
@@ -165,7 +167,8 @@ node * BST_delete(node * root, double key){
 				if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
 			}
 			if(DEBUG_DELETE) cout<<"Ending Else\n";
-			cout<<"Key deleted : "<<ptr->x<<endl;
+			double new_value = (root != NULL)?root->x : -1.0;
+                        if(DEBUG_DELETE) cout<<"Key replaced with : "<<new_value<<"	Key deleted : "<<ptr->x<<"\n";
 			free(ptr);
 			ptr = NULL;
 		}	
@@ -263,7 +266,7 @@ long long int FindCount(){
 	long long int count = 0;
 	while(b!=blue.end()&& v!=violet.end()){
 		while(y!=yellow.end() && (*b).second >= (*y).first){
-			if(DEBUG_FINDCOUNT)	cout<<"before insert\n";
+			if(DEBUG_FINDCOUNT)	cout<<"before insert, key : "<<(*y).second<<"\n";
 			double key = (*y).second;
 			node * exists = BST_search(root,key);
 			if(exists != NULL){
@@ -284,7 +287,7 @@ long long int FindCount(){
 			++y;
 		}
 		while(((*b).second>(*v).first)&&(v!=violet.end())){
-			if(DEBUG_FINDCOUNT)	cout<<"before delete\n";
+			if(DEBUG_FINDCOUNT)	cout<<"before delete,key : "<<(*v).second<<"\n";
 			double key = (*v).second;
 			node * exists = BST_search(root,key);
 			if(exists != NULL){
@@ -363,7 +366,7 @@ int main(){
 	pair<double,double> A2;
 	pair<double,double> A3;
 	scanf("%lld",&n);
-	long long int test_cases = 1; // 1000000/n;
+	long long int test_cases = 1000000/n;
 	long long int r =0;
 	while(r<test_cases){
 			blue.clear(); yellow.clear(); violet.clear();
