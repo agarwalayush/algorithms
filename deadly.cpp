@@ -82,7 +82,7 @@ int greater_than(double x){
     int sum=0;
     while(root != NULL){
         //cout<<"inside the loop of greater_than "<<root->x<<" "<<x<<endl;
-        if(x > root->x){
+        if(x >= root->x){
             //if(x == root->x)sum+=size(root) - size(root->left);
             root=root->right;
         }
@@ -110,38 +110,7 @@ int greater_(double x){
     }
     return sum;
 }
-int ge(double x)
-{
-    node *head=bst;
-    int ans=0;
-    while(head!=NULL)
-    {
-        int size=head->subtree_size;
-        if(head->left!=NULL)
-            size-=head->left->subtree_size;
-        if(head->x >=x){
-            ans+=size;
-            head=head->left;    
-        }
-        else head=head->right;
-    }
-    return ans;
-}
-int g(double x){
-    node *head=bst;
-    int ans=0;
-    while(head!=NULL){
-        int size=head->subtree_size;
-        if(head->left!=NULL)
-            size-=head->left->subtree_size;
-        if(head->x >x){
-            ans+=size;
-            head=head->left;    
-        }
-        else head=head->right;
-    }
-    return ans;
-}
+
 int search(double x_first, double x_second){
     //cout<<greater_<<" "<<greater_than<<endl;
     return greater_(x_first) - greater_than(x_second);
