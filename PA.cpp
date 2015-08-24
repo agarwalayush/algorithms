@@ -371,12 +371,26 @@ long long int brute(){
 	while(b!=blue.end()){
 		r = red.begin();
 		while(r!=red.end()){
-			if(((*r).first.first<=(*b).second)&&((*r).first.second>=(*b).second)&&((*b).first.first<=(*r).second)&&((*b).first.second>=(*b).second))	x++;
+			if(((*r).first.first<=(*b).second)&&((*r).first.second>=(*b).second)&&((*b).first.first<=(*r).second)&&((*b).first.second>=(*r).second))	x++;
 			++r;
 		}
 		++b;	
 	}
 	return x;
+}
+
+int main_testing(){
+	pair<pair<double,double>,double> b = make_pair(make_pair(0.5,0.7),0.3);
+	pair<pair<double,double>,double> r = make_pair(make_pair(0.3,0.4),0.7);
+	blue.push_back(b);
+	red.push_back(r);
+	cout<<"Brute force : "<<brute()<<"\n";
+	pair<double,double> y = make_pair(0.3,0.7);
+	pair<double,double> v = make_pair(0.4,0.7);
+	violet.push_back(v);
+	yellow.push_back(y);
+	cout<<"Our Answer : "<<FindCount()<<"\n";
+	return 0;
 }
 
 int main(){
