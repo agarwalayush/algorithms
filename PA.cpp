@@ -10,10 +10,12 @@ using namespace std;
 #define DEBUG_DELETE 0
 #define DEBUG_COUNT 0
 #define DEBUG_FINDCOUNT 0
+#define DEBUG_BRUTE 1
 
 vector<pair<pair<double,double>,double> > blue;
 vector<pair<double,double> > yellow;  // Contains the start point of all vertical red lines
 vector<pair<double,double> > violet;  // Contains the end point of all vertical red lines
+vector<pair<pair<double,double>,double> > red;
 
 class node{
 	public:
@@ -362,20 +364,38 @@ int main_tst(){
     }
 }
 
+long long int brute(){
+	long long int x = 0;
+	vector<pair<pair<double,double>,double> >::iterator b=blue.begin();
+        vector<pair<pair<double,double>,double> >::iterator r=red.begin();
+	while(b!=blue.end()){
+		r = red.begin();
+		while(r!=red.end()){
+			if(((*r).first.first<=(*b).second)&&((*r).first.second>=(*b).second)&&((*b).first.first<=(*r).second)&&((*b).first.second>=(*b).second))	x++;
+			++r;
+		}
+		++b;	
+	}
+	return x;
+}
+
 int main(){
 	srand (static_cast <unsigned> (time(0)));
 	long long int n,count;
+	double brute_force_ans = 0.0;
 	double ans = 0.0;
 	double max = 1.0;
 	double min = 0.0;
 	pair<pair<double,double>,double> A1;
+	pair<pair<double,double>,double> A4;
 	pair<double,double> A2;
 	pair<double,double> A3;
 	scanf("%lld",&n);
 	long long int test_cases = 1000000/n;
 	long long int r =0;
 	while(r<test_cases){
-			blue.clear(); yellow.clear(); violet.clear();
+			blue.clear(); yellow.clear(); violet.clear(); 
+			if(DEBUG_BRUTE)	red.clear();
 			root = NULL;
 // Blue lines input is taken first, in the format x1 x2 y\n
 		for(int i=0; i<n; i++){
@@ -391,32 +411,40 @@ int main(){
                 	A2.first = ((double) rand()*(A3.first-min)/(double)RAND_MAX-min);
                 	A3.second = ((double) rand()*(max-min)/(double)RAND_MAX-min);
 			A2.second = A3.second;
+			if(DEBUG_BRUTE){
+				A4.first.first = A2.first;
+				A4.first.second = A3.first;
+				A4.second = A3.second;
+				red.push_back(A4);
+			}
 			yellow.push_back(A2);
 			violet.push_back(A3);
 			if(DEBUG_MAIN)	printf("%lf %lf %lf %lf\n",A2.first, A2.second,A3.first,A3.second);
         	}
 // Sort all the three vectors based on their Y-coordinates
 		
-        sort (blue.begin(), blue.end(), blueFunction);
+        	sort (blue.begin(), blue.end(), blueFunction);
 		sort (yellow.begin(), yellow.end(), redFunction);
 		sort (violet.begin(), violet.end(), redFunction);
-        if(DEBUG_MAIN){
-            tr(blue,i){
-                cout<<"blue"<<" "<< (*i).first.first <<" "<< (*i).first.second<<" "<<(*i).second<<endl;
-            }
-            tr(yellow,i){
-                cout<<"yellow"<<" "<< (*i).first <<" "<< (*i).second<<endl;
-            }
-            tr(violet,i){
-                cout<<"violet"<<" "<< (*i).first <<" "<< (*i).second<<endl;
-            }
-        }
+        	if(DEBUG_MAIN){
+            		tr(blue,i){
+                		cout<<"blue"<<" "<< (*i).first.first <<" "<< (*i).first.second<<" "<<(*i).second<<endl;
+            		}
+            		tr(yellow,i){
+                		cout<<"yellow"<<" "<< (*i).first <<" "<< (*i).second<<endl;
+            		}
+            		tr(violet,i){
+                		cout<<"violet"<<" "<< (*i).first <<" "<< (*i).second<<endl;
+            	}
+		}
+		if(DEBUG_BRUTE)	brute_force_ans += brute();
 		count = FindCount();
 		if(DEBUG_MAIN)	printf("%lld\n", count);
 		ans = ans + count;
 		r++;
-	}
+	}	
 	printf("Averaged number of intersections for n = %lld is %lf\n",n, ans/test_cases);
+	if(DEBUG_BRUTE)	printf("Brute force answer for n = %lld is %lf\n",n,brute_force_ans/test_cases);
 	return 0;
 }
 
