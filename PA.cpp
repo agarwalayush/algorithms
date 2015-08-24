@@ -153,6 +153,7 @@ node * BST_delete(node * root, double key){
 			if(ptr->right==NULL){
 				if(DEBUG_DELETE)	cout<<"Inside If\n";
 				root->x = ptr->x;
+				root->count = ptr->count;
 				root->left = ptr->left;
 				if(root->left != NULL)	root->left->parent = root;
 			}
@@ -161,7 +162,12 @@ node * BST_delete(node * root, double key){
 				while(ptr->right!= NULL){
 					ptr->subtree_size --;
 					ptr = ptr->right;
-				}		
+				}
+				root->count = ptr->count;
+				while(ptr->right!= NULL){
+					ptr->count = ptr->count - root->count +1;
+					ptr = ptr->right;
+                		}		
 				root->x = ptr->x;
 				ptr->parent->right = ptr->left;
 				if(ptr->left != NULL)	ptr->left->parent = ptr->parent;
@@ -205,9 +211,9 @@ long long int BST_count(node * root, double x1, double x2){
 	if(DEBUG_COUNT)	cout<<"Before while 2\n";
 	while(ptr_x2 != NULL){
 		if(DEBUG_COUNT) cout<<"in x1 locating loop of count\n";
-		if(ptr_x2->x == x2) break;
 		if(m[ptr_x2]==1) LCA = ptr_x2;
-                if(ptr_x2->x < x2){
+		if(ptr_x2->x == x2) break;
+                else if(ptr_x2->x < x2){
 			if(DEBUG_COUNT) cout<<"WHAT THE HELL!\n";
                         ptr_x2 = ptr_x2->right;
                 }
@@ -228,7 +234,7 @@ long long int BST_count(node * root, double x1, double x2){
                     if(ptr->x == x1){ 
                             count = (ptr->right == NULL)? count +ptr->count : count + ptr->right->subtree_size +ptr->count;
                             break;
-                 }
+		    }
                     else if(ptr->x < x1){
                         ptr = ptr->right;
                     }
