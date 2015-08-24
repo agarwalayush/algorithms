@@ -39,9 +39,15 @@ void insert_key(double key){
         root->subtree_size++;
         if(key > root->x)
             root = root->right;
-        else
+        else if(key < root->x)
             root = root->left;
+        else{
+            //cout<<root->subtree_size<<endl;
+            return ;
+        }
+
     }
+    //cout<<parent->subtree_size<<endl;
     if(parent != NULL){
         if(key > parent->x)
             parent->right = nodeCreator(key);
@@ -58,7 +64,7 @@ void delete_key(double key){
         root->subtree_size--;
         if(key > root->x)
             root = root->right;
-        else
+        else if(key <root->x)
             root = root->left;
     }
     root->subtree_size--;
@@ -70,22 +76,75 @@ int size(node* t){
     else return t->subtree_size;
 }
 
+
 int greater_than(double x){
-    node *root=bst;
+ node *root=bst;
     int sum=0;
     while(root != NULL){
         //cout<<"inside the loop of greater_than "<<root->x<<" "<<x<<endl;
-        if(x > root->x) root=root->right;
+        if(x > root->x){
+            //if(x == root->x)sum+=size(root) - size(root->left);
+            root=root->right;
+        }
         else {
-            sum += size(root->right) + 1;
+            sum += size(root) - size(root->left) ;
             root = root->left;
         }
     }
     return sum;
 }
 
+int greater_(double x){
+ node *root=bst;
+    int sum=0;
+    while(root != NULL){
+        //cout<<"inside the loop of greater_than "<<root->x<<" "<<x<<endl;
+        if(x > root->x){
+            //if(x == root->x)sum+=size(root) - size(root->left);
+            root=root->right;
+        }
+        else {
+            sum += size(root) - size(root->left) ;
+            root = root->left;
+        }
+    }
+    return sum;
+}
+int ge(double x)
+{
+    node *head=bst;
+    int ans=0;
+    while(head!=NULL)
+    {
+        int size=head->subtree_size;
+        if(head->left!=NULL)
+            size-=head->left->subtree_size;
+        if(head->x >=x){
+            ans+=size;
+            head=head->left;    
+        }
+        else head=head->right;
+    }
+    return ans;
+}
+int g(double x){
+    node *head=bst;
+    int ans=0;
+    while(head!=NULL){
+        int size=head->subtree_size;
+        if(head->left!=NULL)
+            size-=head->left->subtree_size;
+        if(head->x >x){
+            ans+=size;
+            head=head->left;    
+        }
+        else head=head->right;
+    }
+    return ans;
+}
 int search(double x_first, double x_second){
-    return greater_than(x_first) - greater_than(x_second);
+    //cout<<greater_<<" "<<greater_than<<endl;
+    return greater_(x_first) - greater_than(x_second);
 }
 
 int findtotal(int n,pair<pair<double,double>, double > *b, pair<double,double> *y, pair<double,double> *v){
@@ -109,8 +168,11 @@ int findtotal(int n,pair<pair<double,double>, double > *b, pair<double,double> *
     }
 }
 
+
+
 int main(){
-    srand (static_cast <unsigned> (time(0))); 
+//    srand (static_cast <unsigned> (time(0))); 
+    std::ios_base::sync_with_stdio(false);
     int n,i;
     double p,q,r;
     cin>>n;
@@ -118,35 +180,26 @@ int main(){
     pair<double, double> y[n]; 
     pair<double, double> v[n];
     for(i=0; i<n; i++){
-        //cin>>p>>q>>r;
-        p = ((double) rand()/(double)RAND_MAX);
+        cin>>p>>q>>r;
+        /*p = ((double) rand()/(double)RAND_MAX);
         q = ((double) rand()/(double)RAND_MAX);
-        r = ((double) rand()/(double)RAND_MAX);
+        r = ((double) rand()/(double)RAND_MAX);*/
         b[i].x1 = min(p,q);
         b[i].x2 = max(p,q);
         b[i].y = r;
     }
     for(i=0; i<n; i++){
-        //cin>>p>>q>>r;
-        p = ((double) rand()/(double)RAND_MAX);
+        cin>>p>>q>>r;
+        /*p = ((double) rand()/(double)RAND_MAX);
         q = ((double) rand()/(double)RAND_MAX);
-        r = ((double) rand()/(double)RAND_MAX);
+        r = ((double) rand()/(double)RAND_MAX);*/
         y[i].first = min(p,q);
         v[i].first = max(p,q);
         v[i].second = y[i].second = r;
     }
-    //for(i=0; i<n; i++)
-    //    cout<<"blue "<<b[i].x1<<" "<<b[i].x2<<" "<<b[i].y<<endl;
     sort(b,b+n, blueFunction);
     sort(y,y+n,redFunction);
     sort(v,v+n, redFunction);
-    /*for(i=0; i<n; i++)
-        cout<<"blue "<<b[i].x1<<" "<<b[i].x2<<" "<<b[i].y<<endl;
-    for(i=0; i<n; i++)
-        cout<<"yellow "<<y[i].first<<" "<<y[i].second<<endl;
-    for(i=0; i<n; i++)
-        cout<<"violet "<<v[i].first<<" "<<v[i].second<<endl;
-    */
     findtotal(n,b,y,v);
     cout<<total<<endl;
 }
