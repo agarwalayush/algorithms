@@ -40,7 +40,7 @@ For the given $2*n$ line segments ($n$ vertical red and $n$ horizontal blue) (in
 \end{center}
 \item The green dashed line in the above figure shows our sweep line. This basically means that the horizontal blue lines are processed in increasing $y$ co-ordinates.
 \item All yellow points (bottom point of red lines) that lies below or on the sweep line indicate those red lines that can potentially cause an intersection with the blue line. So, the $x$-coordinates of these yellow points are inserted into the BST maintained.
-\item All violet points (top point of red lines) that lies above the sweep line indicate those red lines that can no longer cause an intersection with the blue line. So, the $x$-coordinates of these violet points are deleted from the BST maintained.
+\item All violet points (top point of red lines) that lies below the sweep line indicate those red lines that can no longer cause an intersection with the blue line. So, the $x$-coordinates of these violet points are deleted from the BST maintained.
 \item Now the number of intersections of this blue line (say is defined by $(x_1,y),(x_2,y)$)  are found by finding the number of nodes in the BST having $x$ in the range $[x_1,x_2]$.
 \item To optimize the above implementation, the BST was augmented by sub-tree size along with usual node data.
 \item Two implementations of the range count was done, with first one being submitted -
@@ -66,21 +66,21 @@ For the given $2*n$ line segments ($n$ vertical red and $n$ horizontal blue) (in
  \hline
  $n$   & Time(seconds) & No. of Intersections & $n^2/9$ &  $n *\log n $ & $(10^7 * Time/n* \log n)$\\
  \hline 
- $1$   	& $0$ 		& $0.1111$	& $ 0.11 $ 		& $ 0 $  		& $ $	\\
+ $1$   	& $0$ 		& $0.1111$	& $ 0.11 $ 		& $ 0 $  		& $ -- $	\\
  \hline
- $10$  	& $4.00 * 10^{-6}$	& $11.1052$ & $ 11.11 $		& $ 33.2 $		& $ $	\\
+ $10$  	& $4.00 * 10^{-6}$	& $11.1052$ & $ 11.11 $		& $ 33.2 $		& $ 1.20 $	\\
  \hline
- $10^2$	& $7.00 * 10^{-5}$	& $1110.92$	& $ 1111.11$		& $ 664 $		& $ $	\\
+ $10^2$	& $7.00 * 10^{-5}$	& $1110.92$	& $ 1111.11$		& $ 664 $		& $ 1.05 $	\\
  \hline
- $10^3$	& $0.0011$	& $111082$	& $ 111111.11 $ 	& $	9960	 $		& $ 3000 $	\\
+ $10^3$	& $0.0011$	& $111082$	& $ 111111.11 $ 	& $	9960	 $		& $ 1.10 $	\\
  \hline
- $10^4$	& $0.015$  	& $1.11* 10^7 $	& $ 1.11 * 10^7  $	& $	132800 $		& $ 40000 $\\
+ $10^4$	& $0.015$  	& $1.11* 10^7 $	& $ 1.11 * 10^7  $	& $	132800 $		& $ 1.13 $\\
  \hline
- $10^5$	& $0.25$ 	& $1.11* 10^9$& $ 1.11 * 10^7	$ 	& $	1.66 * 10^6$	&	\\
+ $10^5$	& $0.25$ 	& $1.11* 10^9$& $ 1.11 * 10^7	$ 	& $	1.66 * 10^6$	& $ 1.50 $	\\
  \hline
- $10^6$	& $4.8$		& $1.11* 10^{11}$& $ 1.11 * 10^7 $	& $	1.992 * 10^7$	&	\\
+ $10^6$	& $4.8$		& $1.11* 10^{11}$& $ 1.11 * 10^7 $	& $	1.992 * 10^7$	& $ 2.41 $	\\
  \hline
- $10^7$	& $62$		& $1.11* 10^{13}$& $ 1.11 * 10^7 $	& $	2.324 * 10^8$	&	\\
+ $10^7$	& $62$		& $1.11* 10^{13}$& $ 1.11 * 10^7 $	& $	2.324 * 10^8$	& $ 2.67 $	\\
  \hline
 \end{tabular}
 
@@ -89,6 +89,7 @@ For the given $2*n$ line segments ($n$ vertical red and $n$ horizontal blue) (in
 \subsection{Inferences}
 \begin{itemize}
 \item From Result Table, we can see that execution time of the algorithm is $O(n*logn)$
+\item From $n=10^2$ to $n=10^7$ we can notice a steady increase in the $Time/(n*log n)$ ratio. 
 \item From Result Table, we can see that on an average, the number of intersections of the red-blue line segments when generated uniformly randomly in $(0,1)$ is $n^2/2$
 \subsubsection{Bonus Question Proof}
 From our uniform generation we have that ($0<=x_1<=1$), ($0<=x_2<=1$), ($0<=y_1<=1$), ($0<=y_2<=1$), ($0<=x<=1$) and ($0<=y<=1$) are random variables with probability distribution function as $1$ in $[0,1]$ and 0 otherwise. Therefore, the probability of $x$ lying between $[x_1,x_2]$ will be (taking $x_1<=x_2$) -
