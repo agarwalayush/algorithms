@@ -60,27 +60,69 @@ For the given $2*n$ line segments ($n$ vertical red and $n$ horizontal blue) (in
 \item {\bf Number of repetitions} made for a given {\bf $n$} is {\bf $10^7/n$}. 
 \item {\bf Range of $n$ } is {\bf $\{1,10,10^2, 10^3, 10^4, 10^5, 10^6, 10^7 \} $}
 \end{itemize}
-\hspace*{-2.5cm}\begin{tabular}{|p{1cm}|p{2.5cm}|p{2.5cm}|p{1.5cm}|p{1.5cm}|p{4cm}|}
+\hspace*{-2.5cm}\begin{tabular}{|p{1cm}|p{2.5cm}|p{2.5cm}|p{2cm}|p{2cm}|p{4cm}|}
  \hline
  \multicolumn{6}{|c|}{Result Table} \\
  \hline
  $n$   & Time(seconds) & No. of Intersections & $n^2/9$ &  $n *\log n $ & $(10^7 * Time/n* \log n)$\\
  \hline 
- $1$   	& $0$ 		& $0.1111$	& $ $ 	& $ $  	& $ $	\\
+ $1$   	& $0$ 		& $0.1111$	& $ 0.11 $ 		& $ 0 $  		& $ $	\\
  \hline
- $10$  	& $4.00E-06$	& $11.1052$ & $ $	& $ $	& $ $	\\
+ $10$  	& $4.00 * 10^{-6}$	& $11.1052$ & $ 11.11 $		& $ 33.2 $		& $ $	\\
  \hline
- $10^2$	& $7.00E-05$	& $1110.92$	& $ $	& $ $	& $ $	\\
+ $10^2$	& $7.00 * 10^{-5}$	& $1110.92$	& $ 1111.11$		& $ 664 $		& $ $	\\
  \hline
- $10^3$	& $0.0011$	& $111082$	&  	&	&	\\
+ $10^3$	& $0.0011$	& $111082$	& $ 111111.11 $ 	& $	9960	 $		& $ 3000 $	\\
  \hline
- $10^4$	& $0.015$  	& $1.11E+07$	&	&	&	\\
+ $10^4$	& $0.015$  	& $1.11* 10^7 $	& $ 1.11 * 10^7  $	& $	132800 $		& $ 40000 $\\
  \hline
- $10^5$	& $0.25$ 	& $1.11E+09$&	&	&	\\
+ $10^5$	& $0.25$ 	& $1.11* 10^9$& $ 1.11 * 10^7	$ 	& $	1.66 * 10^6$	&	\\
  \hline
- $10^6$	& $4.8$		& $1.11E+11$&	&	&	\\
+ $10^6$	& $4.8$		& $1.11* 10^{11}$& $ 1.11 * 10^7 $	& $	1.992 * 10^7$	&	\\
  \hline
- $10^7$	& $62$		& $1.11E+13$&	&	&	\\
+ $10^7$	& $62$		& $1.11* 10^{13}$& $ 1.11 * 10^7 $	& $	2.324 * 10^8$	&	\\
  \hline
 \end{tabular}
+
+\subsection{Plot}
+
+\subsection{Inferences}
+\begin{itemize}
+\item From Result Table, we can see that execution time of the algorithm is $O(n*logn)$
+\item From Result Table, we can see that on an average, the number of intersections of the red-blue line segments when generated uniformly randomly in $(0,1)$ is $n^2/2$
+\subsubsection{Bonus Question Proof}
+From our uniform generation we have that ($0<=x_1<=1$), ($0<=x_2<=1$), ($0<=y_1<=1$), ($0<=y_2<=1$), ($0<=x<=1$) and ($0<=y<=1$) are random variables with probability distribution function as $1$ in $[0,1]$ and 0 otherwise. Therefore, the probability of $x$ lying between $[x_1,x_2]$ will be (taking $x_1<=x_2$) -
+\begin{center}
+$\int_{0}^{1} {$\int_{x_1}^{1} {$\int_{x}^{1} 1 * dx_2 $} * dx * $} dx_1$
+= 1/6
+\end{center}
+Similarly for $x_1>=x_2$ it will be $1/6$. Implying overall probability of $x$ lying between $x_1$ and $x_2$ is $1/3$. \\*
+Blue and Red line segments will intersect when 
+\begin{center}
+$x$ lies between $x_1$ and $x_2$ \\*
+and \\*
+$y$ lies between $y_1$ and $y_2$ \\*
+\end{center}
+Implies probability of one blue and one red line segment intersection is -
+\begin{center}
+= $1/3 * 1/3 = 1/9$ \\*
+As $x$ and $y$ are independent random variables here.
+\end{center}
+There are $n^2$ pairs of $(red,blue)$ line segments. Implying on an average when $n$ is pretty large, the number of intersections should be
+\begin{center}
+ = $n^2 * 1/9$ \\*
+ = $n^2/9$
+\end{center} 
+\item  We tried random generation also based on the constraints - 
+\begin{itemize}
+\item $0<=x_2<=1$, $0<=x_1<=x_2$ and $0<=x<=1$
+\item $0<=y_2<=1$, $0<=y_1<=x_2$ and $0<=y<=1$
+\end{itemize}
+In this case we got average number of intersections = $n^2/16$, which can again be proved like above and is also very intuitive.
+\begin{center}
+\includegraphics[scale=0.5]{out.png}
+\end{center}
+\item If you notice the output shown above, the answer is matching exactly with the brute force answer, indicating the code should be right. But, this code does NOT work properly with the corner case of overlapping verticals and it got a WA on judge. This should be because, when double/float values are randomly generated it is very unlikely that they end up being same!!
+\item Though we are NOT balancing the BST after any insertion, this implementation shows that running time is indeed in $O(n*log(n))$, showing the power of a randomized input. 
+\end{itemize}
 \end{document}
