@@ -143,48 +143,42 @@ int delete_tree(node* root){
 }
 
 int main(){
-    srand (static_cast <unsigned> (time(0))); 
     std::ios_base::sync_with_stdio(false);
     int n,i,t=0;
     clock_t begin,e;
-    time_t start, end;
-    double p,q,r,total_time=0;
+//    time_t start, end;
+    double p,q,r,total_time=0.0;
     cin>>n;
-    int testcase=10000000/n;
+    int testcase=1;
     long long answer=0;
     while(t < testcase){
         t++;
         for(i=0; i<n; i++){
-            p = ((double) rand()/(double)RAND_MAX);
-            q = ((double) rand()/(double)RAND_MAX);
-            r = ((double) rand()/(double)RAND_MAX);
+            cin>>p>>q>>r;
             b[i].x1 = min(p,q);
             b[i].x2 = max(p,q);
             b[i].y = r;
         }
         for(i=0; i<n; i++){
-            p = ((double) rand()/(double)RAND_MAX);
-            q = ((double) rand()/(double)RAND_MAX);
-            r = ((double) rand()/(double)RAND_MAX);
+            cin>>p>>q>>r;
             y[i].first = min(p,q);
             v[i].first = max(p,q);
             v[i].second = y[i].second = r;
         }
-        time(&start);
-        //begin = clock();
+  //      time(&start);
+        begin= clock();
         sort(b,b+n, blueFunction);
         sort(y,y+n,redFunction);
         sort(v,v+n, redFunction);
         findtotal(n,b,y,v);
-        time(&end);
-        //e = clock();
-        total_time+=difftime(end,start);
+        //time(&end);
+        e=clock();
+       // total_time=(float)difftime(end,start);
         answer+=total;
         delete_tree(bst);
-        bst=NULL;
-        total=0;
     }
-    cout<<answer*(1.0)/testcase<<endl;
-    cout<<"time elapsed "<<total_time/testcase<<endl;
+//    cout<<total<<" "<<total_time<<endl;
+      printf("%lld ",total);
+      printf("%lf",(float)(e - begin) / CLOCKS_PER_SEC);
 }
 
