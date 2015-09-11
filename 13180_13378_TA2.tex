@@ -63,17 +63,22 @@ As we go along the iterations, say we have covered k points then, we have partia
 \newpage
 \section{Unique-path graph}
 \subsection{Overview}
-Given there exists a vertex $u$ which has a path to every other vertex, we approach by first finding out vertex $u$. Now, we apply a single DFS from $u$ and keep extra field of $High\_pt[v]$ to check for unique-path nature of the graph.
+Given there exists a vertex $u$ which has a path to every other vertex, we approach by first finding out vertex $u$. Now, we apply a single DFS from $u$ and keep extra field of $Back\_edge[v]$ to check for unique-path nature of the graph.
 \subsection{Algorithm}
 \begin{itemize}
-\item 
+\item Start
+\item Mark all vertices unvisited. 
+\item Start DFS from every vertex that is unvisited and mark them visited whenever they get visited in the process. Also estimate start and finish times of every vertex.
+\item Let $u$ = Vertex with maximum finish time.
+\item Start a DFS from vertex $u$. Exit if any cross edge, forward edge, or more than one back edge from any vertex in encountered as in these cases the graph cannot be unique-path graph.
+\item  
 \end{itemize}
 \subsection{Pseudo Code}
 
 
 \subsection{Time Complexity : }
 \begin{itemize}
-\item Locating the vertex $u$ takes a single DFS - O(m+n)
+\item Locating the vertex $u$ takes a single DFS for every unvisited vertex - O(m+n)
 \item From $u$ we make a single DFS - O(m+n)
 \item Therefore, overall it is O(m+n) algorithm.
 \end{itemize}
