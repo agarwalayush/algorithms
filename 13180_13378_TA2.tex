@@ -1,9 +1,15 @@
 \documentclass{article}
 \usepackage{epsfig}
 \usepackage{graphicx}
+\usepackage[top=0.50in, bottom=0.50in, left=0.65in, right=0.75in]{geometry}
 %\usepackage[a4paper, total={6in, 10in}]{geometry}
 \usepackage[table]{xcolor}
 \usepackage{tikz}
+\usepackage{algorithm}
+\usepackage{mathtools}
+\usepackage{amsmath,amssymb}
+\usepackage[]{algpseudocode}
+\usepackage{enumitem}
 \title{CS345 Theoretical Assignment 1 \\ }
 \author{\vspace{2mm} \large Ayush Agarwal, 13180 \\ M.Arunothia, 13378}
 \date{}
@@ -11,54 +17,72 @@
 \maketitle
 \tableofcontents
 \newpage
-\section{Non-Dominated Points}
+\section{Neister Tree}
 \subsection{Overview}
-Given a set of coordinates P, we create list of each layer in the following manner.\\
-First sort the coordinates based on Y-coordinate in descending order. Then maintain an array A of size $n$. Start with the first coordinate from 
-the sorted array P(of all coordinates). This point will be a non-dominated point and will be a part of layer 1. Update the first index of A with the x-coordinate
-of this point. Now take the second point from P. If its x coordinate is greater than the x-coordinate of earlier point, it means that it will be part of layer
-1. If so then add it to layer 1 and update the layer 1's index in A. Otherwise it will be in second layer, so add it in layer 2 and update the layer 2's index 
-in A with it's x coordinate. Repeat the above procedure for all points.
+Given a complete graph G(E,V), we construct neister tree of set X by using nodes in $\{G \backslash X\}$ in a brute force manner.
+Neister tree on X is a set Z so that $X \subset Z \subset V$, together with a spanning tree T of G[Z] such that weight of MST(G[Z]) is minimum.
+
+\subsection{Maximum value of $Z$ }
+\textbf{Lemma 1}: Any node n $\in$ $\{Z \backslash X\}$ will have $\textbf{degree}>=3$ in MST(G[Z]).\\
+\textbf{Proof}: 
+\begin{itemize} \itemsep -3pt
+\item \textbf{degree}(n) can't be 0 since it $\in$ MST(G[Z]) which is fully connected.
+\item \textbf{degree}(n) can't be 1 because a Spanning Tree can be constructed by just dropping n, whose weight will be less than MST(G[Z]). In that case Z won't be neister tree.
+\item Suppose node n $\in$ {Z\\X} is connected to only 2 nodes (say x and y) in M=MST(G[Z]).
+ Using Triangle Inequality we can say that,\\
+ \hspace*{1cm}  $\boldsymbol{\omega}(n,x) $+$ \boldsymbol{\omega}(n,y) >= \boldsymbol{\omega}(x,y)$ \\ 
+ Now, we can have a Spanning Tree $S$ in which there is an edge between x and y, and n is absent.\\
+ \hspace*{1cm} \textbf{weight}(S)$= \textbf{weight}(M) - \boldsymbol{\omega}(n,x) - \boldsymbol{\omega}(n,y) + \boldsymbol{\omega}(x,y) <= \textbf{weight}(M)$\\
+ Contradiction.  
+\end{itemize}
+Hence we can say that $\textbf{degree}(n)>=3$ in MST(G[Z]).\\
+\\
+Lets calculate the maximum value of $Z$. Suppose $\mid Z\backslash X\mid = p$.\\
+In a tree, $\sum_V \textbf{degree}(v) = 2E$. In case of MST(G[Z]), minimum degree of p and k vertices are 3 and 1 respectively. \\
+\hspace*{1cm} $\implies 3p + k <= 2(p+k-1)$     \hspace*{1cm}$\because E=V-1$ in a tree\\
+\hspace*{1cm} $\implies p<=k-2$\\
 
 \subsection{Pseudo-Code}
-Non-Dominated-points(P)	\\*
-\{			\\*
-    \hspace*{1cm}$ P  \longrightarrow  reverse\_sort(P)$ //sort in descending order of Y  \\*
-    \hspace*{1cm} $ Layer[n]; A[n] $\\*
-    \hspace*{1cm} $ A[0]=P[0].x $\\*
-    \hspace*{1cm} $Layer[1].push(P[0])$ \\*
-	\hspace*{1cm} $i=1; right=1 $\\*
-    \hspace*{1cm} $while(i < P.length())$\\*
-    \hspace*{2cm} $point = P[i]$\\*
-    \hspace*{2cm} $index = binary\_search\_predecessor(A, 0, right, point.x)$ \\*
-    \hspace*{4cm}                // returns the predecessor's index \\*
-    \hspace*{2cm} $Layer[index].push(point)$\\*
-    \hspace*{2cm} $A[index] = point.x$\\*
-    \hspace*{2cm} $If (index > right ) right++ $\\*
-	\hspace*{1cm} $return  Layer $\\*
-	\\*
-\} \\
-\\
-binary\_search\_predecessor(A, left, right, x)
-\{ \\*
-\hspace*{1cm} If no entry in A is less than x, return $right+1$ \\*
-			 else return the index of maximum x coordinate less than x. \\*
-\} \\*
+\begin{itemize} \itemsep -3pt
+        \item \textbf{n} $= \mid V\mid$ 
+        \item \textbf{vertexSet(G, k)}: returns a set of k distinct vertices from G which is different from previously returned sets
+        \item \textbf{min\_weight}: holds the minimum weight of all the trees seen so far.
+        \item \textbf{neisterTree}: Holds the set of vertices(Z) which can be potential Neister-Tree.    
+\end{itemize}
+\begin{algorithm}
+\begin{algorithmic}[1]
+\Procedure{NeisterTree($G, X, V$)}{}
+\State min\_weight $\gets$ \textbf{MST}(G[X])
+\State neisterTree $\gets$ X
+\State $T \gets \{G\backslash X\}$
+\For{$i$ in 0 \textbf{to} $k-2$}
+\For{$j$ in 1 \textbf{to} $^{n-k} C_i$}
+\State $Z \gets X\cup \textbf{vertexSet}(T,i)$ 
+\State $temp \gets \textbf{MST}(G[Z])$
+\If{temp $\leq$ min\_weight}
+\State min\_weight $\gets$ temp
+\State neisterTree $\gets$ Z
+\EndIf
+\EndFor
+\EndFor
+\State return neisterTree
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
 
 \subsection{Time Complexity}
-  Sorting step takes $O(nlogn)$ time, followed by binary\_search for each point which takes maximum $ logn $ time per point.
-  $while$ iterates for all the points and in each iteration binary\_search is invoked, thus the loop takes $ n*logn $ time.
-  Overall algorithm takes time \\
-             $O(nlogn) + O(nlogn) = O(nlogn) $
-\subsection{Proof of Correctness}
-\subsubsection{What is to be proved?}
-As we go along the iterations, say we have covered k points then, we have partially constructed layers. If the new $k+1$th point lies between the $i$th and $i+1$th (that is the $x$ predecessor of $k+1$ is the last point encountered in layer $i$) of these layers then it has to belong to layer $i$.
-\subsubsection{Reasoning by Contradiction}
-\begin{itemize}
-\item It cannot belong to any layer $>i$ as the layers are increasingly drawn in x.
-\item It cannot belong to any layer $<i$ as this point is clearly not dominated by the points in layer $i$ that is seen so far.
-\item Hence, The point should belong to layer $i$.
-\end{itemize}
+For every $i^{th}$ iteration, time req. is \\
+\hspace*{1cm}$^{n-k} C_i *\textbf{MST(Z)}  <=$  $^{n-k} C_i * n^2$\\
+Summing up time for every iteration,\\
+\hspace*{1.2cm} $^{n-k} C_0 * n^2 + ^{n-k} C_1 * n^2 + ^{n-k} C_2 * n^2 + ... +  ^{n-k} C_{k-1} * n^2 + ^{n-k} C_k * n^2$\\
+\hspace*{1cm} $=$ $ ^{n-k+1} C_{k+1} * n^2 $\\
+\hspace*{1cm} $\leq$ $^{n} C_{k+1} * n^2 $\\
+\hspace*{1cm} $\leq$ $n^{k+1}  * n^2 $\\
+\hspace*{1cm} $\leq$ $n^{\mathcal{O}(k)}$\\
+\hspace*{1cm} So time Complexity is $\boldsymbol{\mathcal{O}(n^{\mathcal{O}(k)})}$\\
+
+\subsection{Justification}
+This algorithm uses brute force to cover all cases. Basically it iterates over every possible subset of $\{V\backslash X\}$ of cardinality less than k-1, calculating the weight of the MST thus formed and takes minimum of them. The tree with the minimum weight is our answer.\\  
 
 \newpage
 \section{Unique-path graph}
