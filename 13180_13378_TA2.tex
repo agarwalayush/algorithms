@@ -49,7 +49,6 @@ In a tree, $\sum_V \textbf{degree}(v) = 2E$. In case of MST(G[Z]), minimum degre
         \item \textbf{min\_weight}: holds the minimum weight of all the trees seen so far.
         \item \textbf{neisterTree}: Holds the set of vertices(Z) which can be potential Neister-Tree.    
 \end{itemize}
-\begin{algorithm}
 \begin{algorithmic}[1]
 \Procedure{NeisterTree($G, X, V$)}{}
 \State min\_weight $\gets$ \textbf{MST}(G[X])
@@ -68,7 +67,6 @@ In a tree, $\sum_V \textbf{degree}(v) = 2E$. In case of MST(G[Z]), minimum degre
 \State return neisterTree
 \EndProcedure
 \end{algorithmic}
-\end{algorithm}
 
 \subsection{Time Complexity}
 For every $i^{th}$ iteration, time req. is \\
@@ -87,18 +85,44 @@ This algorithm uses brute force to cover all cases. Basically it iterates over e
 \newpage
 \section{Unique-path graph}
 \subsection{Overview}
-Given there exists a vertex $u$ which has a path to every other vertex, we approach by first finding out vertex $u$. Now, we apply a single DFS from $u$ and keep extra field of $Back\_edge[v]$ to check for unique-path nature of the graph.
+Given there exists a vertex $u$ which has a path to every other vertex, we approach by first finding out vertex $u$. Now, we apply a single DFS from $u$ and keep extra tracker of $Back\_edge\_to$ to check for unique-path nature of the graph.
 \subsection{Algorithm}
 \begin{itemize}
 \item Start
 \item Mark all vertices unvisited. 
 \item Start DFS from every vertex that is unvisited and mark them visited whenever they get visited in the process. Also estimate start and finish times of every vertex.
 \item Let $u$ = Vertex with maximum finish time.
-\item Start a DFS from vertex $u$. Exit if any cross edge, forward edge, or more than one back edge from any vertex in encountered as in these cases the graph cannot be unique-path graph.
-\item  
+\item Start a DFS from vertex $u$. Exit with false if any cross edge, forward edge, or more than one back edge from any sub-tree is encountered as in these cases the graph cannot be unique-path graph.
+\item Exit with true.
+\item Stop.  
 \end{itemize}
 \subsection{Pseudo Code}
-
+Run a DFS and find the vertex $v$ with maximum Finish Time. Now Run the following starting from $v$. 
+\begin{algorithmic}[1]
+\Procedure{DFS($v$)}{}
+\State \textbf{Visited}[v] $\gets$ true
+\State D[v] $\gets$ $count++$
+\State \textbf{Back\_edge\_to} $\gets$ Not Valid
+\For{each edge $(v,w)$}
+\If{ \textbf{Visited}[v] $=$ false}
+\State $DFS(w)$;
+\ElsIf{\textbf{Finished}[w]}
+\State UniquePathGraph $\gets$ false
+\State break;
+\ElsIf{\textbf{Back\_edge\_to} $=$ Not valid}
+\State \textbf{Back\_edge\_to} $\gets$ $w$
+\ElsIf{\textbf{Finished}[\textbf{Back\_edge\_to}]}
+\State \textbf{Back\_edge\_to} $\gets$ $w$
+\Else
+\State UniquePathGraph $\gets$ false
+\State break;
+\EndIf
+\EndFor
+\State \textbf{Finished}[w] $\gets$ true;
+\State F[v] $\gets$ $count++$
+\State UniquePathGraph $\gets$ true
+\EndProcedure
+\end{algorithmic}
 
 \subsection{Time Complexity : }
 \begin{itemize}
