@@ -189,8 +189,8 @@ This problem is approached by exploiting the topological ordering of DAGs. By th
 \subsection{Algorithm}
 \begin{itemize}
 \item Start.
-\item Sort the vertices to get their topological ordering. Let $path$ be an array, defined as - $path[i]$ stores the number of distinct paths from root to the $i^{th}$ node in the topological ordering. Initialize all entries of this array with $0$.
-\item Let $i = 1$, the first vertex after root in order. Run the following step till $i <> n-1$
+\item Sort the vertices to get their topological ordering. Let $path$ be an array, defined as - $path[i]$ stores the number of distinct paths from root to the $i^{th}$ node in the topological ordering. Initialize all entries of this array with $0$. and $path[0] = 1$
+\item Let $i=1$, $node_1$ denotes the first vertex after root in order. Run the following step till $i <> n-1$
 \item For all incoming vertices to this $i^{th}$ node : edge ($node_j, node_i$) exists
 \begin{itemize}
 \item assign edge weight as $path[i]$
@@ -203,6 +203,7 @@ Assign\_edge\_weight(V,E)	\\*
 \{			\\*
 	\hspace*{1cm}node[ ] = topological\_sort(V,E) \\*
 	\hspace*{1cm}path[ ] = $0$ \\*
+	\hspace*{1cm}path[0] = $1$ \\*
 	\hspace*{1cm} $i = node[1]$ // $node[0$] will be $root$\\*
 	\hspace*{1cm} while$(i <> n-1)$  \\*
 	\hspace*{2cm} For all $(node[j], node[i]) \in E$ \\*
@@ -218,24 +219,34 @@ Assign\_edge\_weight(V,E)	\\*
 \end{itemize}
 \subsection{Proof of Correctness}
 \subsubsection{What is to be proved? or Claim}
-That given any square of side length 'n' (a power of 2)  and Prime Minister's office P we can exhaust the rest of the square with non overlapping pieces of L-shaped tiles ( L-shape containes 3 unit sqaures that can be guarded by a commando and hence is equivalent to the given problem).  \\*
+After $i$ iterations, $node j \in \{1,2,..,i\}$ will have $path[j]$ to be the number of distinct paths that start from the root and end in $node[j]$. Each of these paths will be assigned a unique path id between $0$ and $path[j]-1$.  
 \subsubsection{Proof by Induction}
-Induction is carried out on the length of the square. \\*
+Induction is carried out on the iterator $i$
 \subsubsection{Base Cases}
 \begin{itemize}
-\item $(n<2)$ - No commandos needed. \\*
-\item $(n==2)$ - Only one commando needed and he should be placed so as to cover 'L' shape that leaves out Prime Minister's cabin. \\*
+\item $(i=1)$ - Only one edge from root to this $node_1$. 
+\item $w(root,node_1) = path[1] = 0$  
+\item $path[1] = path[0] + 0 = 1$
+\item Hence, claim satisfies base case.
+\item Notice, if there was no edge from root also, the claim will still hold.
 \end{itemize}
 \subsubsection{Hypothesis}
-Let $ n = 2^{k} $. \\*
-Let us assume that the Claim is true for all $i<=k$ where $k>1$ and both are integers. \\*
+Let us assume that the Claim is true for all $i<=k$ where $k>1$ and both are integers.
 \subsubsection{Inductive Step}
-Let us prove that claim for $ k+1 $ is true. \\*
-The square of size $2^{k+1}$ can be broken into four squares of size $2^{k}$. As the claim holds for sizes $<=k$, these 4 squares can be exhausted in the required way, (i.e) PM cabin anywhere we chose it to be and the rest exhausted with non overlapping 'L' shapes. \\*
+Let us prove that claim for $ k+1 $ is true.
 \begin{center}
 \includegraphics[scale=0.09]{3.jpg}
 \end{center}
-Then chose, the PM cabin's as shown above. This way just by adding one more commando, on $p_2$ facing towards ${Square}_1$, we can exhaust our required full square! \\*
-Thus, proved by induction. \\*
-Note, this has to be an optimal solution as we are ensuring that every box is guarded by just one commando (this is because of the combine step which does not disturb any guarded box and the base case for which the claim holds). 
+\begin{itemize}
+\item if $(node_j, node_{k+1}) \in E$ then $j<k+1$ as they are in topological order. 
+\item From inductive hypothesis we know 
+\begin{itemize}
+\item $path[j]$ - The total number of distinct paths from root to $node_j$.
+\item Every path from $root$ to $node_j$ have unique path-ids $\in [0,path[j]-1]$.
+\end{itemize}
+\item $w(node_j, node_{k+1}) = path[k+1]$ will help maintain distinct path-ids as the paths that were encountered to reach $node_{k+1}$ would have been assigned path-ids between $0$ and $path[k+1]-1$. This new set of paths to $node_{k+1}$ via $node_{j}$ will get path-ids in $(path[k+1], path[k+1] +path[j])$.
+\item Notice that every such $j$ will add $path[j]$ number of distinct paths to reach $node_{k+1}$ from the root. Hence, $path[k+1] += path[j]$ updates that in the loop.
+\item Hence, the claim holds for $k+1$.
+\item Thus, proved by induction.
+\end{itemize}
 \end{document}
