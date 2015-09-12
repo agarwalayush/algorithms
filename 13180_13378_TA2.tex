@@ -85,14 +85,14 @@ This algorithm uses brute force to cover all cases. Basically it iterates over e
 \newpage
 \section{Unique-path graph}
 \subsection{Overview}
-Given there exists a vertex $u$ which has a path to every other vertex, we approach by first finding out vertex $u$. Now, we apply a single DFS from $u$ and keep extra tracker of $Back\_edge\_to$ to check for unique-path nature of the graph.
+Given there exists a vertex $u$ which has a path to every other vertex, we approach by first finding out vertex $u$. Now, we apply a single DFS from $u$ and keep extra field of $Back\_edge$ to check for unique-path nature of the graph.
 \subsection{Algorithm}
 \begin{itemize}
 \item Start
 \item Mark all vertices unvisited. 
 \item Start DFS from every vertex that is unvisited and mark them visited whenever they get visited in the process. Also estimate start and finish times of every vertex.
 \item Let $u$ = Vertex with maximum finish time.
-\item Start a DFS from vertex $u$. Exit with false if any cross edge, forward edge, or more than one back edge from any sub-tree is encountered as in these cases the graph cannot be unique-path graph.
+\item Start a DFS from vertex $u$. Exit with false if any cross edge, forward edge, or more than one back edge from any sub-tree to its ancestor is encountered as in these cases the graph cannot be unique-path graph.
 \item Exit with true.
 \item Stop.  
 \end{itemize}
