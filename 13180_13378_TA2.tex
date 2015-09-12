@@ -135,11 +135,34 @@ Run a DFS and find the vertex $v$ with maximum Finish Time. Now Run the followin
 
 \subsection{Proof of Correctness}
 
+define v' : vertex from which every other vertex is reachable\\
 \textbf{Lemma 1:} DFS from a vertex v visits all the unvisited vertices which are reachable from v.\\
 \textbf{Proof:} Follows from the lemma discussed in the class.\\
 \\
-\textbf{Theorem:} A graph is unique path graph if and only if in there are no cross/forward edges and atmost one backedge in every subtree of the dfs tree of vertex V'.\\
-\textbf{Proof:}  
+\textbf{Theorem:} A graph is unique path graph if and only if in there are no cross/forward edges and there is atmost one backedge in every subtree of the dfs tree of vertex v'.\\
+\textbf{Proof:} \\
+Suppose the graph has forward/cross edge or more than one backedge in any subtree of the dfs tree of v'. 
+\begin{itemize}
+\item If an edge($x -> y$) is a forward/cross edge in dfs tree of v', this implies that there are two paths from v' to y, one using only the tree edges and other through the edge $x->y$. Hence the graph is non-unique path graph.
+\item Suppose a node x has a backedge ($x->y$) and another node in its subtree p has a backedge ($p->q$) where q is the ancestor of x. 
+\begin{itemize}
+\item If y is the ancestor of q. In that case there are two paths from x to q, one  $(x->y-->q)$ and other via $x-->p->q$. Hence Non-unique.
+\item If q is the ancestor of y. In that case there are two paths from x to y, one direct $(x->y)$ and other via $x-->p->q-->y$. Hence Non-unique.  
+\item If y is q. Here also two paths, $x->q$ and $x-->p->q$.
+\end{itemize}
+\end{itemize}
+Hence the graph is Non-Unique Path Graph.\\
+\\
+Lets prove other part by contradiction.\\
+Assume the graph doesn't have any cross/forward edges and there is atmost one backedge in every subtree, and the graph is non-unique path graph. Since it is non-unique path graph, it must have two paths between atleast two nodes (say x$-->$y). 
+\begin{itemize}
+\item If y $\in$ subtree(x), then only one path was possible from $x-->y$ since there are no forward edges.
+\item If y $\in$ subtree other than subtree(x), there is atmost one path from x to y since there are no cross-edges, and that too via backedge which is atmost one.
+\end{itemize}
+This implies that y is the ancestor of x. Therefore path from x to y can only be via backedge, but there is only one backedge eminating from the subtree of x which means that there can be atmost one path from x to y. Hence Contradiction.\\
+\\
+Therefore we can say that a graph is unique path graph if and only if in there are no cross/forward edges and there is atmost one backedge in every subtree of the dfs tree of vertex v'.\\
+Hence Proved.
 
 \newpage
 \section{A real life application of Directed Acyclic Graphs}
