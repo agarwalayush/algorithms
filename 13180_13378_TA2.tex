@@ -108,7 +108,11 @@ Run a DFS and find the vertex $v$ with maximum Finish Time. Now Run the followin
 \If{ \textbf{Visited}[v] $=$ false}
 \State $DFS(w)$;
 \State t $\gets$ backEdge[w]
+<<<<<<< HEAD
 \If{t$<>$ Null \&\& Finished[t]$=$false }
+=======
+\If{t$<>$ Null \&\& Finished[t]$=$false \&\& t$<>$v }
+>>>>>>> e34ecb0bdf4dd0ea034da5d91e32ccbc51953f66
 \State backEdge[v] = t
 \EndIf
 \ElsIf{\textbf{Finished}[w]}
@@ -134,6 +138,8 @@ Run a DFS and find the vertex $v$ with maximum Finish Time. Now Run the followin
 \end{itemize}
 
 \subsection{Proof of Correctness}
+\textbf{Lemma 1:} DFS from a vertex v visits all the unvisited vertices which are reachable from v.
+\textbf{Proof:} Follows from the lemma discussed in the class. 
 
 \newpage
 \section{A real life application of Directed Acyclic Graphs}
