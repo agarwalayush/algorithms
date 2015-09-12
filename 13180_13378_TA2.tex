@@ -139,6 +139,11 @@ define v' : vertex from which every other vertex is reachable\\
 \textbf{Lemma 1:} DFS from a vertex v visits all the unvisited vertices which are reachable from v.\\
 \textbf{Proof:} Follows from the lemma discussed in the class.\\
 \\
+\textbf{Lemma 2:} All vertices are reachable from vertex with maximum finish time.\\
+\textbf{Proof:} Assume v' is reachable from v(in the worst case v' $=$ v.\\
+After dfs(v), all vertices will be marked visited since v' is reachable from v. \hspace*{2cm}Follows from lemma 1\\
+Since v' is reachable from v, all vertices will be reachable from v. And since dfs(v) will be the last one to end, v will have maximum finish time. \\
+\\
 \textbf{Theorem:} A graph is unique path graph if and only if in there are no cross/forward edges and there is atmost one backedge in every subtree of the dfs tree of vertex v'.\\
 \textbf{Proof:} \\
 Suppose the graph has forward/cross edge or more than one backedge in any subtree of the dfs tree of v'. 
