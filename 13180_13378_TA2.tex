@@ -100,19 +100,22 @@ Given there exists a vertex $u$ which has a path to every other vertex, we appro
 Run a DFS and find the vertex $v$ with maximum Finish Time. Now Run the following starting from $v$. 
 \begin{algorithmic}[1]
 \Procedure{DFS($v$)}{}
+\State UniquePathGraph $\gets$ true
 \State \textbf{Visited}[v] $\gets$ true
 \State D[v] $\gets$ $count++$
-\State \textbf{Back\_edge\_to} $\gets$ Not Valid
+\State \textbf{backEdge[v]} $\gets$ Null
 \For{each edge $(v,w)$}
 \If{ \textbf{Visited}[v] $=$ false}
 \State $DFS(w)$;
+\State t $\gets$ backEdge[w]
+\If{t$<>$ Null \&\& Finished[t]$=$false \&\& t$<>$v }
+\State backEdge[v] = t
+\EndIf
 \ElsIf{\textbf{Finished}[w]}
 \State UniquePathGraph $\gets$ false
 \State break;
-\ElsIf{\textbf{Back\_edge\_to} $=$ Not valid}
-\State \textbf{Back\_edge\_to} $\gets$ $w$
-\ElsIf{\textbf{Finished}[\textbf{Back\_edge\_to}]}
-\State \textbf{Back\_edge\_to} $\gets$ $w$
+\ElsIf{\textbf{backEdge[v]} $=$ Null}
+\State \textbf{backEdge[v]} $\gets$ $w$
 \Else
 \State UniquePathGraph $\gets$ false
 \State break;
@@ -120,7 +123,6 @@ Run a DFS and find the vertex $v$ with maximum Finish Time. Now Run the followin
 \EndFor
 \State \textbf{Finished}[w] $\gets$ true;
 \State F[v] $\gets$ $count++$
-\State UniquePathGraph $\gets$ true
 \EndProcedure
 \end{algorithmic}
 
@@ -132,6 +134,8 @@ Run a DFS and find the vertex $v$ with maximum Finish Time. Now Run the followin
 \end{itemize}
 
 \subsection{Proof of Correctness}
+\textbf{Lemma 1:} DFS from a vertex v visits all the unvisited vertices which are reachable from v.
+\textbf{Proof:} Follows from the lemma discussed in the class. 
 
 \newpage
 \section{A real life application of Directed Acyclic Graphs}
