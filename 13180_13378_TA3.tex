@@ -72,11 +72,47 @@ Rest Filter and append function are O(n) and are invoked O(n) time. So complexit
 \subsection{Space-Complexity}
 Space complexity is O($n^2$)
 
+\subsection{Proof of Correctness}
+\textbf{Lemma 1:} Any petrol pump is visited only once in the path from source to destination.
+\textbf{Proof:} Lets prove this lemma by contradiction. Suppose there exists a petrol pump which gets visited twice (or more than once)
+in the optimal path from source to destination. Lets call that petrol pump as p.
+
+\newpage
 \section{Time-Optimization}
 \subsection{Overview}
+We solve this question by considering all the cases using dynamic programming. For this we use an $n\times H$ matrix for storing the already computed
+values. Call that matrix as M.
+M[i][j] stores the optimal grade value ( equal to i*average grade ) which can be obtained (in the set of courses less than i) in j hours. 
 
+\subsection{Pseudo-Code}
+\begin{algorithmic}[1]
+  \Procedure{\textbf{timeOptimization}(f[], H, g, n)}{}
+  \State M[n][H] $\gets$ $\infty$
+  \For{$i$ in $H$}
+  \State M[0][i] = f[0](i) 
+  \EndFor
+  \For{$i$ in 1 to n-1}
+  \For{$j$ in H}
+  \For{$k$ in H}
+  \State M[i][j] = max(f[i](k) + M[i-1][j-k], M[i][j]) 
+  \EndFor
+  \EndFor
+  \EndFor
+  \State return M[n-1][H] 
+  \EndProcedure 
+\end{algorithmic}
 
+\subsection{Time Complexity}
+This algorithm involves 3-Level nested loop. So its complexity will be \\
+\hspace*{2cm}$O(nH^2)$
 
+\subsection{Space Complexity}
+For this algo we use a $n \times H$ matrix for storing intermediate values. So the complexity is   \\
+\hspace*{2cm}$O(nH)$  \\
+Although, it can also be otimized to O(H) because for calculating any row we just need its previous row.\\
+So the best complexity is $O(H)$.
+
+\newpage
 \section{Mobile Network}
 \subsection{Overview}
 We take Dynamic Programming approach to solve this problem. The overview of our solution can be described using the following cost matrix. $cost[i][j]$ stores the cost structure (see pseudo code) for corresponding paths that lead to least cost($P_i,..P_j$). To estimate the column green, we will have everything in blue already estimated. We will traverse this column bottom up. To estimate the red box, we will need those boxes shown by the red arrow.    
