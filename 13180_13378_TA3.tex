@@ -17,6 +17,50 @@
 \maketitle
 \tableofcontents
 \newpage
+\section{Shortest routes}
+\subsection{Overview}
+We calculate shortest distance from every petrol pump(considering source and distination to be also petrol pump) to every other petrol pump 
+(shortest distance may or may not follow petrol constraint) by applying Dijkstra Algorithm from each petrol pump. Then we construct a graph
+with only petrol pumps, and edges which are less than allowed petrol constraint. Finally we apply dikstra on this graph from source to calculate
+its distance to destination.
+
+\subsection{Pseudo-Code}
+\begin{algorithmic}[1]
+  \Procedure{\textbf{ShortestPath}(V, E, s, t, threshold)}{}
+  \State G $\gets$ \{V,E\}
+  \State Mark s and t as petrol pumps
+  \State newEdgeList $\gets []$
+  \For{$i$ in \textbf{V.pumps}}
+  \State newEdgeList.append(\textbf{Filter}(\textbf{Dijkstra(i)}, threshold))
+  \EndFor
+  \State Construct graph from newEdgeList
+  \State d $\gets$ \textbf{Dijkstra(s)}
+  \State return $d[t]$
+  \EndProcedure
+\end{algorithmic} 
+
+\vspace*{0.2cm}
+\begin{algorithmic}[1]
+  \Procedure{\textbf{Dijkstra}(v)}{}
+    \State returns the list of shortest distance of v to all other petrol pumps in G by applying Dijkstra algo.
+  \EndProcedure 
+\end{algorithmic}
+
+\vspace*{0.2cm}
+\begin{algorithmic}[1]
+  \Procedure{\textbf{Filter}(list, threshold)}{}
+    \State returns the list of elements less than $threshold$ in the $list$
+    \EndProcedure 
+\end{algorithmic}
+
+\subsection{Time-Complexity}
+Dijkstra Algorithm takes worst case $mlogn$ time and in the above algorithm we Dijkstra is invoked O(n) times. 
+Rest Filter and append function are O(n) and are invoked O(n) time. So complexity is: \\
+\hspace*{1.5cm}$O(n)*O(mlogn) + O(n^2) = O(mnlogn)$
+
+\subsection{Space-Complexity}
+Space complexity is O($n^2$)
+
 \section{Mobile Network}
 \subsection{Overview}
 We take Dynamic Programming approach to solve this problem. The overview of our solution can be described using the following cost matrix. $cost[i][j]$ stores the cost structure (see pseudo code) for corresponding paths that lead to least cost($P_i,..P_j$). To estimate the column green, we will have everything in blue already estimated. We will traverse this column bottom up. To estimate the red box, we will need those boxes shown by the red arrow.    
