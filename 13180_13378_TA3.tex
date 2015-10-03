@@ -73,9 +73,27 @@ Rest Filter and append function are O(n) and are invoked O(n) time. So complexit
 Space complexity is O($n^2$)
 
 \subsection{Proof of Correctness}
+The subtelity of this problem is that vertices can be visited twice. So lets dig deeper into it and formalize the observations.
+
 \textbf{Lemma 1:} Any petrol pump is visited only once in the path from source to destination.
 \textbf{Proof:} Lets prove this lemma by contradiction. Suppose there exists a petrol pump which gets visited twice (or more than once)
-in the optimal path from source to destination. Lets call that petrol pump as p.
+in the optimal path from source to destination. Lets call that petrol pump as p. So the path will be somewhat like $s-->p-->p-->t$.
+The sole reason for any vertex being visited twice was because of petrol constraint.  
+We can observe that the state of the bike is same after every visit to the petrol pump.
+And since the edge weights are positive we can have a solution without $p-->p$ cycle which will be having weight less than the proposed optimal solution.
+Thus the proposed solution is not optimal solution. Hence by contradiction we can say that any petrol pump is not visited more than once.
+\\
+\textbf{Lemma 2:} No vertex is visited twice in the shortest path(without any petrol constraints) from pump p to pump q.
+\textbf{Proof:} Without any petrol constraint, the problem is like normal weighted graph problem. So to calculate the shortes path from p to
+q in a normal positive weighted graph, I won't be visiting any vertex twice becuase it will add an extra unnecessary cycle weight to my shortest path. 
+Hence proved.
+\\
+By Lemma2 we can say that, to calculate the shortest distance without petrol constraint from pump \'p\' to all other pumps, 
+we can just apply Dijkstra from p. Similarly we can calculate distance of every pump with every other pump by applying Dijkstra on all of them.
+Then we construct a graph G' consisting of only petrol pumps and s & t. In this construction the path from s to t is preserved. From lemma1 we have said that
+any petrol pump is visited only once in the optimal path from s to t. Hence we can safely apply Dijkstra in this newly constructed graph to calculate distance
+from s to t.
+
 
 \newpage
 \section{Time-Optimization}
