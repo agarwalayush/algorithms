@@ -20,9 +20,10 @@
 \section{Shortest routes}
 \subsection{Overview}
 We calculate shortest distance from every petrol pump(considering source and distination to be also petrol pump) to every other petrol pump 
-(shortest distance may or may not follow petrol constraint) by applying Dijkstra Algorithm from each petrol pump. Then we construct a graph
+(shortest distance may or may not follow petrol constraint) by applying Dijkstra Algorithm from each petrol pump. 
+For every distance between petrol pumps, we also store the path used. Then we construct a graph
 with only petrol pumps, and edges which are less than allowed petrol constraint. Finally we apply dikstra on this graph from source to calculate
-its distance to destination.
+its distance to destination. 
 
 \subsection{Pseudo-Code}
 \begin{algorithmic}[1]
@@ -30,12 +31,21 @@ its distance to destination.
   \State G $\gets$ \{V,E\}
   \State Mark s and t as petrol pumps
   \State newEdgeList $\gets []$
+  \State pathList$[n]$ $\gets []$
   \For{$i$ in \textbf{V.pumps}}
   \State newEdgeList.append(\textbf{Filter}(\textbf{Dijkstra(i)}, threshold))
   \EndFor
   \State Construct graph from newEdgeList
   \State d $\gets$ \textbf{Dijkstra(s)}
-  \State return $d[t]$
+  \State i $\gets$ t
+  \While{i $<>$ s}
+  \State j $\gets$ i
+  \State p $\gets$ pathList[s][i]
+  \While{j $<>$ p}
+  \State print "\$$j<-$"
+  \State j $\gets$ pathList[p][j]
+  \EndWhile
+  \EndWhile
   \EndProcedure
 \end{algorithmic} 
 
@@ -43,6 +53,7 @@ its distance to destination.
 \begin{algorithmic}[1]
   \Procedure{\textbf{Dijkstra}(v)}{}
     \State returns the list of shortest distance of v to all other petrol pumps in G by applying Dijkstra algo.
+    \State \textbf{pathList[v][i]} stores the parent of i in the shortest path from v to i.
   \EndProcedure 
 \end{algorithmic}
 
@@ -60,6 +71,11 @@ Rest Filter and append function are O(n) and are invoked O(n) time. So complexit
 
 \subsection{Space-Complexity}
 Space complexity is O($n^2$)
+
+\section{Time-Optimization}
+\subsection{Overview}
+
+
 
 \section{Mobile Network}
 \subsection{Overview}
