@@ -19,7 +19,9 @@
 \newpage
 \section{Shortest routes}
 \subsection{Overview}
-We calculate shortest distance from every petrol pump(considering source and distination to be also petrol pump) to every other petrol pump 
+Any path from source to vertex is a sequence of petrol pumps and non-petrol pumps in which vertices can be repeated due to petrol constraint. So 
+for calculating shortest distance we can't simply apply Dijkstra. That is why we have to construct an equivalent graph which is free of any such constraint.
+For this, we calculate shortest distance from every petrol pump(considering source and distination to be also petrol pump) to every other petrol pump 
 (shortest distance may or may not follow petrol constraint) by applying Dijkstra Algorithm from each petrol pump. 
 For every distance between petrol pumps, we also store the path used. Then we construct a graph
 with only petrol pumps, and edges which are less than allowed petrol constraint. Finally we apply dikstra on this graph from source to calculate
@@ -73,24 +75,24 @@ Rest Filter and append function are O(n) and are invoked O(n) time. So complexit
 Space complexity is O($n^2$)
 
 \subsection{Proof of Correctness}
-The subtelity of this problem is that vertices can be visited twice. So lets dig deeper into it and formalize the observations.
+The subtlety of this problem is that vertices can be visited twice. So lets dig deeper into it and formalize the observations.
 
-\textbf{Lemma 1:} Any petrol pump is visited only once in the path from source to destination.
+\textbf{Lemma 1:} Any petrol pump is visited only once in the path from source to destination.\\
 \textbf{Proof:} Lets prove this lemma by contradiction. Suppose there exists a petrol pump which gets visited twice (or more than once)
 in the optimal path from source to destination. Lets call that petrol pump as p. So the path will be somewhat like $s-->p-->p-->t$.
 The sole reason for any vertex being visited twice was because of petrol constraint.  
 We can observe that the state of the bike is same after every visit to the petrol pump.
 And since the edge weights are positive we can have a solution without $p-->p$ cycle which will be having weight less than the proposed optimal solution.
-Thus the proposed solution is not optimal solution. Hence by contradiction we can say that any petrol pump is not visited more than once.
-\\
-\textbf{Lemma 2:} No vertex is visited twice in the shortest path(without any petrol constraints) from pump p to pump q.
+Thus the proposed solution is not optimal solution. Hence by contradiction we can say that any petrol pump is not visited more than once.\\
+
+\textbf{Lemma 2:} No vertex is visited twice in the shortest path(without any petrol constraints) from pump p to q.\\
 \textbf{Proof:} Without any petrol constraint, the problem is like normal weighted graph problem. So to calculate the shortes path from p to
 q in a normal positive weighted graph, I won't be visiting any vertex twice becuase it will add an extra unnecessary cycle weight to my shortest path. 
-Hence proved.
+Hence proved.\\
 \\
 By Lemma2 we can say that, to calculate the shortest distance without petrol constraint from pump \'p\' to all other pumps, 
 we can just apply Dijkstra from p. Similarly we can calculate distance of every pump with every other pump by applying Dijkstra on all of them.
-Then we construct a graph G' consisting of only petrol pumps and s & t. In this construction the path from s to t is preserved. From lemma1 we have said that
+Then we construct a graph G\' consisting of only petrol pumps and, s and t. In this construction the path from s to t is preserved. From lemma1 we have said that
 any petrol pump is visited only once in the optimal path from s to t. Hence we can safely apply Dijkstra in this newly constructed graph to calculate distance
 from s to t.
 
@@ -101,22 +103,31 @@ from s to t.
 We solve this question by considering all the cases using dynamic programming. For this we use an $n\times H$ matrix for storing the already computed
 values. Call that matrix as M.
 M[i][j] stores the optimal grade value ( equal to i*average grade ) which can be obtained (in the set of courses less than i) in j hours. 
+M[i][j].hours stores the number of hours devoted to course i in the optimal solution for courses 1 to i in j hours.\\
 
 \subsection{Pseudo-Code}
 \begin{algorithmic}[1]
   \Procedure{\textbf{timeOptimization}(f[], H, g, n)}{}
-  \State M[n][H] $\gets$ $\infty$
+  \State M[n][H] $\gets$ $0$
   \For{$i$ in $H$}
-  \State M[0][i] = f[0](i) 
+  \State M[0][i] = f[0](i)
+  \State M[0][i].hours = i
   \EndFor
   \For{$i$ in 1 to n-1}
   \For{$j$ in H}
-  \For{$k$ in H}
-  \State M[i][j] = max(f[i](k) + M[i-1][j-k], M[i][j]) 
+  \For{$k$ in j}
+  \State temp = max(f[i](k) + M[i-1][j-k], M[i][j]) 
+  \If{temp $\geq$ M[i][j]}
+  \State M[i][j] $\gets$ temp; M[i][j].hours $\gets$ k;
+  \EndIf
   \EndFor
   \EndFor
   \EndFor
-  \State return M[n-1][H] 
+  \State i $\gets$ n-1; j $\gets$ H
+  \While{0 $\leq$ i}
+  \State print M[i][j].hours
+  \State j $=$ j $-$ M[i--][j].hours 
+  \EndWhile
   \EndProcedure 
 \end{algorithmic}
 
@@ -130,114 +141,90 @@ For this algo we use a $n \times H$ matrix for storing intermediate values. So t
 Although, it can also be otimized to O(H) because for calculating any row we just need its previous row.\\
 So the best complexity is $O(H)$.
 
+
+\subsection{Proof of Correctness}
+Grade Value: sum of grades\\
+\textbf{Claim:} M[i][j] stores the optimal grade value in subjects 1 to i by devoting j hours after (i, j) iteration.\\
+\textbf{Proof:} Proof by Induction\\
+\textbf{Base Case}: Only one course. If there is only one course, then the optimal grade value for j hours would simply be f(j), which is what M[0][j] stores.\\
+\textbf{Induction Hypothesis}: M[i-1][k] stores the optimal grade value for all k less than equal to H.\\
+\textbf{Induction Step}: The optimal solution(M[i][j]) can consist of any number of hours($\leq$ j) devoted to course i depending on the f[i] and M[i-1][]. 
+The optimal solution will contain k hours devoted to course i, and j-k hours devoted to rest i-1 courses. To get the number of hours devoted to course i in 
+optimal solution we have to iterate over all the possible hours, and choose the one which gives best grade value. Thus,\\
+\hspace*{2cm}M[i][j] = \{max(M[i][j], f[i](k) + M[i-1][j-k])| for k in [0..j]\} \\
+Now since M[i-1][j-k] is computed correctly, above loop will give correct value of M[i][j].
+Hence proved.
+
 \newpage
 \section{Mobile Network}
 \subsection{Overview}
-We take Dynamic Programming approach to solve this problem. The overview of our solution can be described using the following cost matrix. $cost[i][j]$ stores the cost structure (see pseudo code) for corresponding paths that lead to least cost($P_i,..P_j$). To estimate the column green, we will have everything in blue already estimated. We will traverse this column bottom up. To estimate the red box, we will need those boxes shown by the red arrow.    
-\begin{center}
-\begin{tikzpicture}
-\node at (-1.5,6.5) {$0$};
-\node at (-0.5,6.5) {$1$};
-\node at (0.5,6.5) {$2$};
-\node at (1.5,6.5) {$3$};
-\node at (2.5,6.5) {$4$};
-\node at (3.5,6.5) {$..$};
-\node at (5.5,6.5) {$b$};
-\node at (-2.5,5.5) {$0$};
-\node at (-2.5,4.5) {$1$};
-\node at (-2.5,3.5) {$2$};
-\node at (-2.5,2.5) {$3$};
-\node at (-2.5,1.5) {$4$};
-\node at (-2.5,0.5) {$.$};
-\node at (-2.5,-0.5) {$.$};
-\node at (-2.5,-1.5) {$b$};
-\filldraw[fill=blue!40!white, draw=gray] (-2,5) rectangle (-1,6);
-\filldraw[fill=blue!40!white, draw=gray] (-1,5) rectangle (0,6);
-\filldraw[fill=blue!40!white, draw=gray] (-1,4) rectangle (0,5);
-\filldraw[fill=blue!40!white, draw=gray] (0,5) rectangle (1,6);
-\filldraw[fill=blue!40!white, draw=gray] (0,4) rectangle (1,5);
-\filldraw[fill=blue!40!white, draw=gray] (0,3) rectangle (1,4);
-\filldraw[fill=blue!40!white, draw=gray] (1,5) rectangle (2,6);
-\filldraw[fill=blue!40!white, draw=gray] (1,4) rectangle (2,5);
-\filldraw[fill=blue!40!white, draw=gray] (1,3) rectangle (2,4);
-\filldraw[fill=blue!40!white, draw=gray] (1,2) rectangle (2,3);
-\filldraw[fill=green!40!white, draw=gray] (2,5) rectangle (3,6);
-\filldraw[fill=green!40!white, draw=gray] (2,4) rectangle (3,5);
-\filldraw[fill=green!40!white, draw=gray] (2,2) rectangle (3,3);
-\filldraw[fill=green!40!white, draw=gray] (2,1) rectangle (3,2);
-\draw[step=1cm,black,very thin] (-2,-2) grid (6,6);
-\node[red] at (1,3.5) {$\rightarrow$};
-\node[red] at (2.5,2) {$\uparrow$};
-\filldraw[fill=red!40!white, draw=red, thick] (2,3) rectangle (3,4);
-\end{tikzpicture} \\
-Cost Matrix
-\end{center}
-{\bf struct costij \\}
-\{ \\
-\hspace*{1cm} leastCost // \emph{Stores the least value of $cost(P_i,.. P_j)$}\\
-\hspace*{1cm} edgeList[i..j] // \emph{Stores the corresponding $E_i, .. E_j$}\\
-\}
-\vspace*{0.2cm}
+We take Dynamic Programming approach to solve this problem. The overview of our solution can be described using the following cost array. $cost[i]$ stores 
+least cost($P_0,..P_i$) of $G_0$ to $G_i$ graphs. For computing cost[i+1], we will be iterating over all the graphs from 0 to i. \\
+cost[i] $=$  min\{cost[j] + (i-j)*(shortest path from s to t in Intersection($G_{j+1}$ .... $G_i$)) + K\} for j in i.\\
+Suppose in the optimal solution for 0 to i graphs, $j+1$ to $i$ graphs had same value of path(let say p) and rest was optimal solution of cost[j].So $pathValue$
+and $previous$ are defined in the following way.\\
+cost[i].pathValue = p \\
+cost[i].previous  = j \\
+Graphs are stored in $n\times n$ matrix form in order to ease merging.
+
+\subsection{PseudoCode}
 \begin{algorithmic}[1]
-\Procedure{ShortestPath(V,E,s,t)}{}
-\State Run BFS on (V,E) starting from s.
-\State Store distances of vertices from s in d[].
-\State costij x
-\State $x.leastCost \gets  d[t]$;
-\State $x.edgeList \gets E $;
-\State return x
-\EndProcedure
-\end{algorithmic} 
-\vspace*{0.2cm}
-\begin{algorithmic}[1]
-\Procedure{FindCost($V, E[],s,t$)}{}
-\State costij cost[] // \emph{leastCost of all initialised to infinity}
-\For{$i$ in $0$ \textbf{to} $b-1$}
-\For{$j$ in $i$ \textbf{to} $0$}
-\If{$i == j$}
-\State $cost[i][j] \gets ShortestPath(V,E[i],s,t)$
+\Procedure{MobileNetwork}{}
+\State cost[n] $\gets$ infinity // \emph{array initialized to infinity}
+\For{$i$ in n}
+\If{$i==0$}
+\State cost[i] $\gets$  \textbf{ShortestPath}($G_0$)
 \Else
-\For{$l$ in $i$ \textbf{to} $j-1$}
-\State $edgeMerge \gets cost[i][l].edgeList[l] \cap cost[l+1][j].edgeList[l+1]$ ;
-\State $temp1 \gets ShortestPath(V,edgeMerge,s,t)$ ;
-\State $temp2 \gets  cost[i][l].leastCost + cost[l+1][j].leastCost + K$ ;
-\If{$temp1.leastCost \leq temp2$}
-\State $cost[i][j] \gets temp1$ ;
-\State $cost[i][j].edgeList[l] \gets edgeMerge$ ;
-\State $cost[i][j].edgeList[l+1] \gets edgeMerge$ ;
-\Else
-\State $cost[i][j].leastCost \gets temp2$ ;
-\State $cost[i][j].edgeList \gets cost[i][l].edgeList$ (concat) $cost[l+1][j].edgeList $ ;
+\State mergedGraph $\gets$ $G_i$
+\For{$j$ in i-1 to 0}
+\State mergedGraph = \textbf{merge}($G_{j+1}$, mergedGraph)
+\State temp = min\{cost[i], cost[j] + (i-j)*\textbf{ShortestPath}(mergedGraph) + K\}
+\If{temp $\geq$ cost[i]}
+\State cost[i] $=$ temp
+\State cost[i].pathValue $=$ \textbf{ShortestPath}(mergedGraph)
+\State cost[i].previous  $=$ j
 \EndIf
 \EndFor
+\State cost[i] = min\{cost[i], (i+1)*\textbf{ShortestPath}(mergedGraph)\}
 \EndIf
 \EndFor
-\EndFor
-\State return $cost[0][b-1].leastCost$
+\State i $\gets$ n
+\While{i $\geq$ 0}     \hspace*{2cm} /\ print the path
+\State print cost[i].pathValue (i - cost[i].previous) times
+\State i $\gets$ cost[i].previous
+\EndWhile
 \EndProcedure
 \end{algorithmic}
 
+\vspace*{0.2cm}
+\begin{algorithmic}[1]
+  \Procedure{\textbf{Merge}(mergedGraph, graphToBeMerged)}{}
+    \State return the matrix by taking "And" of every i-j entry of both the graphs
+    \EndProcedure 
+\end{algorithmic}
+
 \subsection{Time Complexity}
-  Merging Edge List and $ShortestPath()$ take $O(m+n)$ where $m$ is the max of \{$|E_1|, |E_2|,.., |E_n|$\}. 
-  The above is repeated $O(b^3)$ times as there are $3$ nested for-loops of $O(b)$
-  Overall algorithm takes time \\
-             		$ = O(b^3 * (m+n))$
+Merging two graphs takes O($V^2$) where V is the number of vertices. ShortestPath between s to t in a graph can be computed in O(m+n) time.
+For any i, algorithm makes i iterations, and in each iteration merging is done. So total iterations are O($n^2$), therefore\\
+\hspace*{2cm}$time complexity = O(b^2*n^2)$ \\
+
 \subsection{Space Complexity}
-An object of structure $costij$ takes space of O(b*m) where $m$ is the max of \{$|E_1|, |E_2|,.., |E_n|$\}.
-Each entry in the matrix takes the above space. Hence, overall space complexity is \\
-					$ = O(b^3 * m)$
+cost array takes O(n) space. All graphs are stored in matrix form. $mergedGraph$ is also stored in matrix form.So space complexity is\\
+\hspace*{2cm} $O(n^2*b)$
+
 \subsection{Proof of Correctness}
 \subsubsection{Claim}
-$cost[i][j].leastCost$ is the least value of cost($P_i,..P_j$) attainable.  
+$cost[i]$ stores the optimal cost of graphs $G_0$ ... $G_i$.  
 \subsubsection{Proof by Induction}
-Induction is carried out on the matrix index $(i,j)$
 \subsubsection{Base Case}
-$(i=j)$ - Only one graph $(V,E[i])$ and hence using correctness of BFS for shortest path in undirected graphs, $ShortestPath()$ will return the correct value.
+For i $=$ 0, cost[i] is simply the shortest path in graph $G_0$.
 \subsubsection{Hypothesis}
-Let us assume that the Claim is true for all $(i,j)$ where $i \leq m$ and $j \leq n$ leaving out $(m,n)$
+Let us assume that the claim is true for all $j$ less than i.
 \subsubsection{Inductive Step}
-Let us prove that claim for $(m,n)$ is true.
-\begin{itemize}
-\item Estimating $cost[m][n]$ 
-\end{itemize}
+Any solution of graphs 0 to i will have same path in j to i graphs. So to get the optimal solution we basically have to iterate over all j\'s less
+than i. Since $G_{j+1}$ and $G_{j}$ are different, we add an extra K. They can be same as well and that case is taken care of. So\\
+cost[i] $=$ min\{cost[j] + (i-j)*(ShortestPath(Merge($G_{j+1}$ .... $G_i$))) + K\} \\
+Now since we have correctly computed cost[j], and we are iterating over all the possible cases, therefore cost[i] is computed correctly.\\
+Hence proved.\\
+
 \end{document}
