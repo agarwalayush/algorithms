@@ -33,8 +33,23 @@ $D = \sum_{i=1}^{n} p_i$ \\
 $n$ = Number of days in total \\
 $k$ = Number of Doctors in total \\ 
 \subsubsection{Claim}
-Construction of $L'_i$s is possible if and only if the max-flow in the s-t graph is D.
-\subsubsection{Proof}
+Construction of $L'_i$s is possible if and only if the max-flow in the source-sink graph constructed (in image) is D.
+\subsubsection{Proof - Part 1}
+{\bf Given $L'_i$s list for all doctors, show that the max flow of source-sink graph shown above is D \\}
+Construct a flow $f$ of the source-sink graph as follows. \\
+$f(source,Doctor[i])$ is $|L'_i|$ - satisfies capacity constraint as these edges had infinite capacity \\
+$f(Doctor[i], Day[j])$ is $1$ if $j$ lies in $L'_i$, otherwise is $0$ - satisfies capacity constraint \\
+$f(Day[j],sink)$ is $p_j$ - satisfies capacity constraint \\
+Flow Conservation is ensured as it is given to us that $L'_i$s of such definitions exist. \\
+Hence, the above is a valid flow. \\
+As the $cut-capacity$ between $sink$ and the rest of the graph is $D$, by $min-cut - max-flow$ theorem, $f$ should be a max flow of the source-sink graph. Hence, proved. 
+\subsubsection{Proof - Part 2}
+{\bf Given the max flow of source-sink graph to be D, show that $L'_i$s list for all doctors exist \\}
+Let $f$ be the integral max-flow of the source-sink graph. (Note: Integral flow exists was proved in class) \\
+Construct $L'_i$ as follows. \\
+If $f(Doctor[i], Day[j])$ is $1$ then add $j$ to $L'_i$ otherwise do nothing. \\
+Note: $f(Doctor[i], Day[j])$ can be only $0$ or $1$ by integral flow property. \\
+The $L'_i$s thus constructed are valid as $value(f) = D$ implying every day $j$ has got the exact number of doctors wanted ($p_j$). Moreover, $L'_i \subseteq L_i$ is ensured from the construction of the source-sink graph itself. Hence, proved.
 \newpage
 \subsection{With Extra Constraint}
 \subsubsection{Overview}
