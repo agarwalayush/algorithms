@@ -25,7 +25,15 @@
 \subsection{Without Extra Constraint}
 \subsubsection{Overview}
 \includegraphics[scale=0.15]{3a.jpg}
+\subsubsection{Notations}
+$p_i$ denotes the exact number of doctors required on day $i$ \\
+$L_i$ denotes the list of days where doctor $i$ is available \\
+$L'_i$ denotes the list of days that doctor $i$ has to work to produce the required match. Note, $L'_i \subseteq L_i$\\
+$D = \sum_{i=1}^{n} p_i$ \\
+$n$ = Number of days in total \\
+$k$ = Number of Doctors in total \\ 
 \subsubsection{Claim}
+Construction of $L'_i$s is possible if and only if the max-flow in the s-t graph is D.
 \subsubsection{Proof}
 \newpage
 \subsection{With Extra Constraint}
