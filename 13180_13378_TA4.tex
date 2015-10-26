@@ -22,9 +22,47 @@
 \includegraphics[scale=0.5]{1.jpg}
 \newpage
 \section{Locating faults in a network}
-\subsection{Algorithm}
-\subsection{Pseudo Code}
+\subsection{Overview}
+First we find k-edge disjoint paths of the given graph using the max-flow application discussed in class. Call these $\{p_1, p_2, .., p_k\}$. For all $i$, we pick $p_i$ and ping its middle vertex. If the result is true, we know that all the vertices to the left of this vertex will also be connected to $S$. If the result is false, we know that all the vertices to the right of this vertex will also be disconnected from $S$. Hence, at the end we get vertices marked connected/disconnected from vertex $S$. {\bf Notice only $O(klog(n))$ pings are issued in the process.}     
+
+\subsection{Pseudo-Code}
+\begin{algorithmic}[1]
+  \Procedure{\textbf{findConnected}(V, E, s, t)}{}
+  \State $\{p_1,p_2,..,p_k\} \gets$ k-disjoint paths between $s-t$ in $(V,E)$
+  \State $S = \phi$
+  \For{$i$ in $\{1,..,k\}$}
+  \State $Nodes \gets$ nodes lying on path $p_i$ in the order of $s-t$
+  \While{$Nodes <> NULL$}
+  \If {$ping(Nodes[mid]) == TRUE$}
+  \State $ S = S \cup Nodes[1..mid]$
+  \State $ Nodes = Nodes[mid+1..last]$
+  \Else
+  \State $ Nodes = Nodes[1..mid-1]$
+  \EndIf
+  \EndWhile
+  \EndFor
+  \State return S
+  \EndProcedure
+\end{algorithmic} 
 \subsection{Proof of Correctness}
+\subsubsection{Claim: Every disjoint path has exactly one defaulted edge}
+\subsubsection{Arguments}
+\begin{itemize}
+\item We are given k edge-disjoint paths from $s-t$.
+\item It is also given that there is no functional path from $s-t$.
+\item Hence, every edge-disjoint path should have atleast one defaulted edge otherwise $s-t$ will become connected which will be a contradiction.
+\item As there are exactly k defaulted edges in total, from above we get that every disjoint path has exactly one defaulted edge.
+\end{itemize} 
+\subsubsection{Claim: Along any edge-disjoint path ping command will produce True,..,True, False,..False}
+\subsubsection{Arguments}
+\begin{itemize}
+\item Any path starts with $s$ where $ping(s) = True$ is given.
+\item Any path ends with $t$ where $ping(t) = False$ is given.
+\item If the above said output is not produced by ping commands along a path then, there should be two distinct consecutive pairs of nodes in the path whose ping command should produce True, False. 
+\item A True,False pair can occur consecutively only if these two vertices have a defaulted edge connecting them.
+\item Therefore, if $3$ happened then there should be two defaulted edges in a given path, which is a contradiction from the previous claim. This proved this claim.
+\end{itemize}    
+{\bf From the previous claim we have the ping pattern True,..,True,False,..,False along any path. This ensures the termination as well as the correctness of the binary search along any path.}
 \newpage
 \section{A max flow application}
 \subsection{Without Extra Constraint}
