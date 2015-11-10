@@ -1,0 +1,188 @@
+\documentclass{article}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage[top=0.50in, bottom=0.50in, left=0.65in, right=0.75in]{geometry}
+%\usepackage[a4paper, total={6in, 10in}]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usepackage{algorithm}
+\usepackage{mathtools}
+\usepackage{amsmath,amssymb}
+\usepackage[]{algpseudocode}
+\usepackage{enumitem}
+\title{CS345 Theoretical Assignment 5 \\ }
+\author{\vspace{2mm} \large Ayush Agarwal, 13180 \\ M.Arunothia, 13378}
+\date{}
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+\section{Binary search and predecessor/successor queries under deletions}
+\subsection{Data Structure Overview}
+The data structure proposed is an Zay $Z[0,..,n-1]$ containing elements of type $struct$ $node$. The $struct$ $node$ has the following elements in it - \\
+\begin{itemize}
+\item $int$ $item$ - where $item \in S$
+\item $bool$ $flag$ - where $flag$ is $valid$ for an existing element and is $invalid$ for a deleted element
+\item $int$ $nextValid()$ - that returns the index of the next valid entry in the Zay
+\item $int$ $grParent$ - that stores the index of the invalid entry that also has the same nextValid (to enable computation of nextValid)
+\item $int$ $sz$ - that stores the number of elements present in the same invalid group (i.e) those invalid entries that have the same nextValid entry (relevant only for the head of the group)  
+\end{itemize}
+The Zay $Z$ is sorted based on the entry value $item$ at the start. This completes the description of the data structure $Z$ that is built from the given set $S$. Apart from this we maintain global variables $Size$ and $DelCounter$. $Size$ tracks the size of the set $S$ whenever it is halved. $Size = n$ and $DelCounter = 0$ at the start.
+\begin{algorithmic}[1]
+  \Procedure{\textbf{nextValid}()}{}
+  \State $ i \gets this$
+  \While{$Z[i] != Z[i].grParent$}
+  \State $i \gets Z[i].grParent$
+  \EndWhile
+  \State return $i$
+  \EndProcedure
+\end{algorithmic} 
+\subsection{Search(x, Z): search for element x in S}
+\subsubsection{Pseudo-Code}
+\begin{algorithmic}[1]
+  \Procedure{\textbf{Search}(x,Z)}{}
+  \State $first \gets$ $0$
+  \State $last \gets$ $n-1$
+  \While{$last >= first$}
+  \State $mid \gets$ $(last + first)/2$
+  \If {$Z[mid].flag == valid$}
+  \State $pos \gets mid$
+  \Else
+  \State $pos \gets Z[mid].nextValid()$  
+  \EndIf
+  \If {$Z[pos].item > x$}
+  \State $last \gets pos-1  $
+  \ElsIf{$Z[pos].item < x$}
+  \State $first \gets pos+1$
+  \Else
+  \State return $pos$
+  \EndIf
+  \EndWhile
+  \State return $notFound$
+  \EndProcedure
+\end{algorithmic} 
+\subsubsection{Poof of Correctness}
+The procedure is similar to a binary search. Whenever an entry has its $flag$ to be $invalid$, we refer to the closest $valid$ entry for the comparison. The proof hence follows from the correctness of binary search.
+\subsubsection{Time Complexity Analysis}
+Worst case - $O(log(n))$. Follows from the similarity with binary search.
+\subsection{Predecessor(x, Z): report the largest elements in S which is smaller than x}
+\subsubsection{Pseudo-Code}
+\begin{algorithmic}[1]
+  \Procedure{\textbf{Predecessor}(x,Z)}{}
+  \State $first \gets$ $0$
+  \State $last \gets$ $n-1$
+  \While{$last >= first$}
+  \State $mid \gets$ $(last + first)/2$
+  \If {$Z[mid].flag == valid$}
+  \State $pos \gets mid$
+  \Else
+  \State $pos \gets Z[mid].nextValid()$  
+  \EndIf
+  \If {$Z[pos].item >= x$}
+  \State $last \gets pos-1  $
+  \Else{$Z[pos].item < x$}
+  \If {$Z[pos+1].flag == valid$}
+  \State $nextValue \gets Z[pos+1].item$
+  \Else
+  \State $nextValue \gets Z[Z[pos+1].nextValid].item$
+  \EndIf
+  \If {$nextValue < x$} 
+  \State $first \gets pos+1$
+  \Else
+  \State return $pos$
+  \EndIf
+  \EndIf
+  \EndWhile
+  \State return $notFound$
+  \EndProcedure
+\end{algorithmic} 
+\subsubsection{Poof of Correctness}
+The procedure is similar to a binary search. Whenever an entry has its $flag$ to be $invalid$, we refer to the closest $valid$ entry for the comparison. The find condition for predecessor is that {\bf the element is valid and is less than $x$ and also the next valid element is not less than x}. The proof hence follows from the correctness of binary search.
+\subsubsection{Time Complexity Analysis}
+Worst case - $O(log(n))$. Follows from the similarity with binary search.
+\subsection{Delete(x, Z): Delete element x from S}
+\subsubsection{Pseudo-Code}
+\begin{algorithmic}[1]
+  \Procedure{\textbf{MergeGroups}(i,j)}{}
+  \State $k \gets  Z[i].nextValid()$
+  \State $l \gets Z[j].nextValid()$
+  \If{$Z[k].sz < Z[l].sz $}
+  \State $Z[k].grParent \gets l$
+  \State $Z[l].sz \gets Z[k].sz + Z[l].sz$
+  \State $Z[k].sz \gets 0$
+  \Else
+  \State $Z[l].grParent \gets k$
+  \State $Z[k].sz \gets Z[k].sz + Z[l].sz$
+  \State $Z[l].sz \gets 0$ 
+  \EndIf
+  \EndProcedure
+\end{algorithmic}
+Delete Function does an $O(log(n))$ modification usually and does an $O(nlog(n))$ only when size of the original array has halved. There are four cases that can happen when $x$ is getting deleted. \\
+\begin{itemize}
+\item Both Previous and next entries of $x$ are valid.
+\item Previous entry of $x$ is valid and next entry of $x$ is invalid.
+\item Previous entry of $x$ is invalid and next entry of $x$ is valid.
+\item Both Previous and next entries of $x$ are invalid.
+\end{itemize}
+\begin{algorithmic}[1]
+  \Procedure{\textbf{Delete}(x,Z)}{}
+  \State $pos \gets Search(x,Z)$
+  \If {$pos == notFound$}
+  \State return $notFound$
+  \Else
+  \If {$DelCounter < Size/2$}
+  \If {$Z[pos-1].flag == valid$}
+  \If {$Z[pos+1].flag == valid$}
+  \State $Z[pos].flag = invalid$
+  \State $Z[pos].grParent = pos$
+  \State $Z[pos].sz = 1$
+  \Else
+  \State $Z[pos].flag = invalid$
+  \State $Z[pos].grParent = pos+1$
+  \State $k \gets Z[pos+1].nextValid()$
+  \State $Z[k].sz \gets Z[k].sz + 1$
+  \State $Z[pos].sz = 0$
+  \EndIf
+  \Else
+  \If {$Z[pos+1].flag == valid$}
+  \State $Z[pos].flag = invalid$
+  \State $k \gets Z[pos-1].nextValid()$
+  \State $Z[pos].grParent = pos$
+  \State $Z[pos].sz \gets Z[k].sz + 1$
+  \State $Z[k].grParent = pos$
+  \State $Z[k].sz \gets 0$
+  \Else
+  \State $Z[pos].flag = invalid$
+  \State $Z[pos].grParent = pos+1$
+  \State $MergeGroups(pos-1,pos+1)$
+  \State $k \gets Z[pos+1].nextValid()$
+  \State $Z[k].sz \gets Z[k].sz + 1$
+  \State $Z[pos].sz = 0$
+  \EndIf
+  \EndIf
+  \State $DelCounter \gets DelCounter +1$
+  \Else
+  \State Remove all entries whose $flag = invalid$
+  \State $DelCounter \gets 0$
+  \State $Size \gets Size/2$
+  \EndIf
+  \EndIf
+  \EndProcedure
+\end{algorithmic} 
+\subsubsection{Poof of Correctness}
+
+\subsubsection{Time Complexity Analysis}
+We use amortised analysis to analyse the Time Complexity of the delete function. We define our potential function as $\phi(X) = 2k * (X.Size)$. This implies that $\Delta(\phi)$ will be $0$ in the first case, as there is no change here and will be $2k * ((Size/2)-Size) = -k*Size$ in the second case. \\
+\begin{tabular}{ |p{4cm}|p{3cm}|p{3cm}|p{3cm}|  }
+ \hline
+ \multicolumn{4}{|c|}{Amortised Analysis} \\
+ \hline
+ Case & Actual Cost& $\Delta(\phi)$ & Amortised Cost\\
+ \hline
+ $DelCounter < Size/2$ & clog(Size)           & 0        & clog(Size)   \\
+ $DelCounter = Size/2$ & clog(Size) + k*Size  & -k*Size  & clog(Size)  \\
+ \hline
+\end{tabular}
+\newpage    
+
+\end{document}
