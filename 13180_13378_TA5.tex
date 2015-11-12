@@ -76,7 +76,8 @@ it like the binary number representation of number n. The indexes where n has va
     = O($log^2$n) \\
     \\
   \item \textbf{insert}\\
-    Let amortized function $$\phi(i) = \sum_{e}^{all elements}depth(e)  = \sum_{i}^{i \leq logn} 2^i(logn - i) $$ after the $i^th$ insertion where $depth(e) = logn - arrayIndex(e)$.\\
+    Let amortized function $$\phi(i) = \sum_{e}^{all elements}depth(e)  = \sum_{i}^{i \leq logn} 2^i(logn - i) $$ (where i is all the nonzero indices in the binary representation of n) after the $i^th$ insertion where \\
+    $depth(e) = logn - arrayIndex(e)$.\\
     \begin{tabular}{|p{4cm}|p{3cm}|p{3cm}|p{3cm}|  }
       \hline
       \multicolumn{4}{|c|}{Amortised Analysis} \\
@@ -84,7 +85,7 @@ it like the binary number representation of number n. The indexes where n has va
       Case & Actual Cost& $\Delta(\phi)$ & Amortised Cost\\
       \hline
       Direct Insert(no merge) & 1           & logn & O(logn)   \\
-      On merge(till array $2^k$) & $2^{k+1}$   & $-\sum_{i}^{i<k} (2^i(k-i))$ & k+1 $\leq$ O(logn) \\
+      On merge(till array $2^k$) & $2^{k+1}$   & $-\sum_{i}^{i<k} (2^i(k-i)) = -(2^{k+1} -k - 2)$ & k+2 $\leq$ O(logn) \\
       \hline
     \end{tabular}
 
