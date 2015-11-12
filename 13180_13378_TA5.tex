@@ -16,6 +16,80 @@
 \begin{document}
 \maketitle
 \tableofcontents
+
+\newpage
+\section{Binary search under insertion}
+\subsection{Data Structure Overview}
+The data structure consists of arrays of multiple arrays with size of the form $2^i$. For searching, we search each of these arrays. To insert an element,
+we first insert it into the first array(of size 1). If it is full we try to insert them into array of size 2. If that is also full we try the same for array 
+of size 4 and so on. This insertion operation is amortized $logn$.
+\begin{itemize}
+  \item \textbf{array}[i] is the pointer to array of size $2^i$
+  \item \textbf{filled} number of arrays being used
+\end{itemize}
+
+\begin{algorithmic}[1]
+\Procedure{\textbf{insertion}(int newElement)}{}
+    \State i $\gets$ 0
+    \While{!array[i].empty()}
+    \State $i$++
+    \EndWhile
+    \State array[i] $\gets$ \textbf{merge}(array, i, newElement)
+    \If{i $>=$ filled}
+      \State filled $\gets$ i
+    \EndIf
+  \EndProcedure
+  \\
+  \Procedure{\textbf{merge}(int *array[], int end, int newElement)}{}
+    \State Merge all the arrays with lengths starting from 1 to $2^end$ and insert the new element into that array.\\
+    \State i $\gets$ 0
+    \While{i $<$ end}
+      \State free(array[i])
+      \State $i$++
+    \EndWhile
+    \State return mergedArray
+  \EndProcedure
+  \\
+  \Procedure{\textbf{search}(int element)}{}
+    \State i $\gets$ 0
+    \While{i $<=$ filled}
+    \If {binarySearch(array[i], element)}
+    \State return True
+    \EndIf
+    \State i $\gets$ i + 1
+    \EndWhile
+  \EndProcedure
+
+\end{algorithmic}
+
+\subsection{Justification}
+At any point of time, any of the $array[i]$ will either be empty or completely filled. There can't be a case when any of the array is partially filled. Think of 
+it like the binary number representation of number n. The indexes where n has value 1, those corresponding arrays are filled, rest are empty.
+
+\subsection{Time Complexity Analysis}
+\begin{itemize}
+  \item \textbf{search} Worst case time would be when every array from size 1 to size $2^{logn-1}$ would be filled. Without the loss of generality assume n = $2^k$
+    So search time,\\
+    = log1 + log2 + $.....$ logn/2 \\
+    = (1 + 2 + 3 $...$ k-1) \\
+    = k(k-1)/2 \\
+    = O($log^2$n) \\
+    \\
+  \item \textbf{insert}\\
+    Let amortized function $$\phi(i) = \sum_{e}^{all elements}depth(e)  = \sum_{i}^{i \leq logn} 2^i(logn - i) $$ after the $i^th$ insertion where $depth(e) = logn - arrayIndex(e)$.\\
+    \begin{tabular}{|p{4cm}|p{3cm}|p{3cm}|p{3cm}|  }
+      \hline
+      \multicolumn{4}{|c|}{Amortised Analysis} \\
+      \hline
+      Case & Actual Cost& $\Delta(\phi)$ & Amortised Cost\\
+      \hline
+      Direct Insert(no merge) & 1           & logn & O(logn)   \\
+      On merge(till array $2^k$) & $2^{k+1}$   & $-\sum_{i}^{i<k} (2^i(k-i))$ & k+1 $\leq$ O(logn) \\
+      \hline
+    \end{tabular}
+
+\end{itemize}
+
 \newpage
 \section{Binary search and predecessor/successor queries under deletions}
 \subsection{Data Structure Overview}
