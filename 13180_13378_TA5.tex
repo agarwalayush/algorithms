@@ -93,7 +93,69 @@ it like the binary number representation of number n. The indexes where n has va
 \newpage
 \section{Binary search and predecessor/successor queries under deletions}
 \subsection{Data Structure Overview}
+The data structure proposed is an array $Z$ of size $|S|$. Each entry in the array has the following -
+\begin{itemize}
+\item Value $x$, where $x \in S$
+\item Flag which is marked valid at the start. Invalid flag implies that entry has been deleted.
+\item Index nextValid, that stores the next valid entry's index correctly for any valid entry.
+\item Index prevValid, that stores the previous valid entry's index correctly for any valid entry.
+\item For every index belonging to $\{logn,2logn,.. \}$, a boolean array of size $O(logn)$ is stored. The boolean array of $ith$ index will says whether there is any valid entry between i and each of  $\{i+1,i+2,i+4,i+8,..,i-1,i-2,i-4,i-8,..\}$. 
+\end{itemize}
+It can be easily seen that the data structure is $O(n)$. Apart from this we maintain global variables $Size$ and $DelCounter$. $Size$ tracks the size of the set $S$ whenever it is halved. $Size = n$ and $DelCounter = 0$ at the start.
+\subsection{Search(x, Z): search for element x in S}
+\subsubsection{Algorithm and Correctness}
+The procedure is similar to a binary search with the only difference being that if the found entry is $invalid$, then we return $notFound$. The proof hence follows from the correctness of binary search. Note that we are given a set, implying there will be no repeating entries. This ensures that if at all an element existed in $S$, then our search will return its index correctly.
+\subsubsection{Time Complexity Analysis}
+Worst case - $O(log(n))$. Follows from the similarity with binary search.
+\subsection{Predecessor(x, Z): report the largest elements in S which is smaller than x}
+\subsubsection{Algorithm}
+\begin{itemize}
+\item We use binary search procedure to find the predecessor of $x$ in $S$. If the returned entry is $valid$, we are done. If not consider this returned index as $i$. 
+\item Now we should find the $valid$ entry that is just before $i$. We first traverse linearly from $i$ to the first index of the form $klogn$, all the while checking for any valid entry. If valid entry found we are done. Otherwise, go to next step.
+\item We use the boolean array of the $klogn$th entry to find $l$ such that the first valid entry before index $i$ lies in the range $(klogn-2^{l-1}, klogn-2^l)$
+\item Let  us say that the first $valid$ entry actually lies at $klogn - m$. We have to find $m$. Look at the binary representation of $m$. It has $l-1$ digits. with first digit as $1$. Now each of the entry from left to right can be filled in $O(1)$ time by discarding half of the potential search space using the boolean arrays stored at the $jlogn$ indices.
+\item return $klogn - m$  
+\end{itemize}
+\subsubsection{Time Complexity Analysis}
+Worst case - $O(log(n))$. Each step mentioned in the algorithm is $O(logn)$
+\newpage
+\subsection{Delete(x, Z): Delete element x from S}
+\subsubsection{Algorithm}
+\begin{itemize}
+\item We use binary search procedure to find the entry to be deleted, say it is $i$ 
+\item If $DelCounter < Size/2$, we do the following
+\begin{itemize}
+\item Increment $DelCounter$
+\item $i.flag = invalid$
+\item $i.prevValid.nextValid = i.nextValid$
+\item $i.nextValid.prevValid = i.prevValid$
+\item For all entries of the form $jlogn$ between $i.prevValid$ and $i.nextValid$, we modify their boolean arrays accordingly so as to maintain the definition of these boolean values. (i.e)., if this was the last valid element in any range that has to be reflected in those boolean values.
+\end{itemize}
+\item Else
+\begin{itemize}
+\item Remove all invalid elements from the array and rebuilt the whole array that has now reduced to half its size.
+\item $DelCounter = 0$
+\item $Size = Size/2$ 
+\end{itemize}
+\end{itemize}
+\subsubsection{Time Complexity Analysis}
+We use amortised analysis to analyse the Time Complexity of the delete function. We define our potential function as \\
+$\phi(X) = 2k * (X.Size) + $ Total number of $TRUE$ stored in the boolean arrays of the $jlogn$ indices. \\
+Let $H(X) = $Number of boolean entries that has been turned $FALSE$ from being $TRUE$ in this turn.  \\
+This implies that $\Delta(\phi)$ will be $0$ in the first case, as there is no change here and will be $2k * ((Size/2)-Size) = -k*Size$ in the second case. \\
 
+\begin{tabular}{ |p{4cm}|p{4cm}|p{2cm}|p{3cm}|  }
+ \hline
+ \multicolumn{4}{|c|}{Amortised Analysis} \\
+ \hline
+ Case & Actual Cost& $\Delta(\phi)$ & Amortised Cost\\
+ \hline
+ $DelCounter < Size/2$ & clog(Size) + H(X)          & 0        & clog(Size)   \\
+ $DelCounter = Size/2$ & clog(Size) + k*Size + H(X) & -k*Size  & clog(Size)  \\
+ \hline
+\end{tabular} \\
+
+Hence, deletion is done in amortised $logn$.
 \newpage    
 \section{Extension of the problem of the mid-semester exam}
 \subsection{Pseudo Code}
@@ -126,13 +188,8 @@ As within the tree any two vertices are always connected via a path whose length
 \subsection{Proving $|E_s| = O(n^{1+1/k}) $}
 \begin{itemize}
 \item If $degree(v) <= n^{1/k}$ then, we add atmost $n^{1/k}$ edges to $E_s$ for the single vertex $v$.
-\item If $degree(v) > n^{1/k}$ then, we add atmost $O($ $vertices$ $being$ $removed$ $ + $ $vertices$ $not$ $being$ $removed$ $)$ edges to $E_s$ for a $cluster$ of atleast $n^{1/k}$ vertices.
-\begin{itemize}
-\item The number of edges that belong to the $cluster$ is of $O($ $vertices$ $being$ $removed$ $)$ as it is a tree.
-\item The number of edges that are incident on the cluster is $O($ $vertices$ $not$ $being$ $removed$ $)$ as proved from justification (1). 
-\item Hence, the given order.
-\end{itemize}
-\item Worst case $|E_s|  =  n*n^{1/k} + \sum_{i=0}^{k} n^{1-i/k}$ = $O(n^{1+1/k})$ 
+\item If $degree(v) > n^{1/k}$ then, we add atmost $O(n)$ edges to $E_s$ for a $cluster$ of atleast $n^{1/k}$ vertices.
+\item Worst case $|E_s|  =  O(n^{1+1/k})$ 
 \end{itemize}
 \subsection{Time Complexity}
 The overall algorithm accesses an edge exactly for O(1) times, because in any iteration of the while-loop the edge getting accessed is being removed off from $G$ and hence, it is guaranteed that no edge is being accessed in two different iterations. Hence, the time complexity is $O(m+n)$.    
